@@ -1,0 +1,56 @@
+fragment SimpleProduct on SimpleProduct {
+  databaseId
+  name
+  slug
+  type
+  price
+  rawPrice: price(format: RAW)
+  date
+  regularPrice
+  rawRegularPrice: regularPrice(format: RAW)
+  salePrice
+  rawSalePrice: salePrice(format: RAW)
+  stockStatus
+  stockQuantity
+  lowStockAmount
+  averageRating
+  weight
+  length
+  width
+  height
+  reviewCount
+  onSale
+  virtual
+  image {
+    ...Image
+    cartSourceUrl: sourceUrl(size: THUMBNAIL)
+    producCardSourceUrl: sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
+  }
+  galleryImages(first: 20) {
+    nodes {
+      ...Image
+      databaseId
+    }
+  }
+}
+
+fragment SimpleProductGrid on SimpleProduct {
+  databaseId
+  name
+  slug
+  type
+  price
+  rawPrice: price(format: RAW)
+  regularPrice
+  rawRegularPrice: regularPrice(format: RAW)
+  salePrice
+  rawSalePrice: salePrice(format: RAW)
+  stockStatus
+  averageRating
+  reviewCount
+  onSale
+  image {
+    ...Image
+    producCardSourceUrl: sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "woonuxt",
+  "private": false,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "NITRO_PRESET=vercel nuxt build",
+    "vercel-build": "cross-env NITRO_PRESET=vercel nuxt build",
+    "dev": "nuxt dev --host",
+    "dev:ssl": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nuxt dev --https --ssl-cert localhost.pem --ssl-key localhost-key.pem",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "node -e \"try { require('nuxt').postinstall() } catch (e) { console.log('Error during nuxt prepare:', e) }\"",
+    "serve": "nuxi generate && npx serve .output/public -l 8080"
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.7.23",
+    "@heroicons/vue": "^2.2.0",
+    "@stripe/stripe-js": "^4.10.0",
+    "@vercel/speed-insights": "^1.2.0",
+    "@vueform/slider": "^2.1.10",
+    "@vueuse/core": "^13.0.0",
+    "tiny-slider": "^2.9.4"
+  },
+  "devDependencies": {
+    "@iconify-json/ion": "^1.2.2",
+    "@nuxt/icon": "^1.11.0",
+    "@nuxt/image": "1.10.0",
+    "@nuxtjs/i18n": "^9.5.2",
+    "@nuxtjs/sitemap": "^7.2.10",
+    "@nuxtjs/tailwindcss": "^6.13.2",
+    "@nuxtjs/vercel-builder": "^0.25.0",
+    "@tailwindcss/typography": "^0.5.16",
+    "cross-env": "^7.0.3",
+    "nuxt": "^3.17.1",
+    "nuxt-graphql-client": "^0.2.46",
+    "prettier": "^3.5.3",
+    "woonuxt-settings": "^1.2.1"
+  },
+  "overrides": {
+    "sharp": "0.32.6"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.39.0"
+  }
+}

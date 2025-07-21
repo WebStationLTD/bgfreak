@@ -1,0 +1,179 @@
+# import "./fragments/ProductTagsFragment.gql"
+# import "./fragments/PwbBrandsFragment.gql"
+
+fragment ProductWithAttributes on ProductWithAttributes {
+  attributes {
+    nodes {
+      ...ProductAttribute
+    }
+  }
+}
+
+fragment ProductAttribute on ProductAttribute {
+  variation
+  name
+  id
+  options
+  label
+  scope
+  ... on GlobalProductAttribute {
+    terms {
+      nodes {
+        name
+        slug
+        taxonomyName
+        databaseId
+      }
+    }
+  }
+}
+
+query getProducts(
+  $after: String
+  $slug: [String]
+  $productTag: [String]
+  $first: Int = 12
+  $orderby: ProductsOrderByEnum = DATE
+  $order: OrderEnum = DESC
+  $minPrice: Float
+  $maxPrice: Float
+  $onSale: Boolean
+  $search: String
+  $attributeFilter: [WooNuxtTaxonomyFilterInput]
+) {
+  products(
+    first: $first
+    after: $after
+    where: {
+      categoryIn: $slug
+      tagIn: $productTag
+      visibility: VISIBLE
+      minPrice: $minPrice
+      maxPrice: $maxPrice
+      onSale: $onSale
+      search: $search
+      attributeFilter: $attributeFilter
+      orderby: { field: $orderby, order: $order }
+      status: "publish"
+    }
+  ) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      name
+      slug
+      type
+      databaseId
+      id
+      averageRating
+      reviewCount
+      ...Terms
+      ...ProductCategories
+      ...ProductWithAttributes
+      ...PwbBrands
+      ...SimpleProductGrid
+      ...VariableProductGrid
+      ...ExternalProduct
+    }
+  }
+}
+
+# НОВА ОПТИМИЗИРАНА ЗАЯВКА за пагинация
+query getProductsOptimized(
+  $after: String
+  $slug: [String]
+  $productTag: [String]
+  $first: Int = 12
+  $orderby: ProductsOrderByEnum = DATE
+  $order: OrderEnum = DESC
+  $minPrice: Float
+  $maxPrice: Float
+  $onSale: Boolean
+  $search: String
+  $attributeFilter: [WooNuxtTaxonomyFilterInput]
+) {
+  products(
+    first: $first
+    after: $after
+    where: {
+      categoryIn: $slug
+      tagIn: $productTag
+      visibility: VISIBLE
+      minPrice: $minPrice
+      maxPrice: $maxPrice
+      onSale: $onSale
+      search: $search
+      attributeFilter: $attributeFilter
+      orderby: { field: $orderby, order: $order }
+      status: "publish"
+    }
+  ) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    # КРИТИЧНО: Зареждаме САМО продуктите за текущата страница
+    nodes {
+      name
+      slug
+      type
+      databaseId
+      id
+      averageRating
+      reviewCount
+      # Минимални данни за бърз grid
+      ...Terms
+      ...ProductCategories
+      ...ProductWithAttributes
+      ...ProductTags
+      ...PwbBrands
+      ...SimpleProductGrid
+      ...VariableProductGrid
+      ...ExternalProduct
+    }
+  }
+}
+
+# ULTRA БЪРЗА заявка за курсори (без продуктни данни)
+query getProductCursors(
+  $slug: [String]
+  $productTag: [String]
+  $first: Int = 2000 # Достатъчно cursor-и за 150+ страници (2000 / 12 = 166 страници)
+  $orderby: ProductsOrderByEnum = DATE
+  $order: OrderEnum = DESC
+  $minPrice: Float
+  $maxPrice: Float
+  $onSale: Boolean
+  $search: String
+  $attributeFilter: [WooNuxtTaxonomyFilterInput]
+) {
+  products(
+    first: $first
+    where: {
+      categoryIn: $slug
+      tagIn: $productTag
+      visibility: VISIBLE
+      minPrice: $minPrice
+      maxPrice: $maxPrice
+      onSale: $onSale
+      search: $search
+      attributeFilter: $attributeFilter
+      orderby: { field: $orderby, order: $order }
+      status: "publish"
+    }
+  ) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    # Зареждаме САМО cursor-и за пагинация - БЕЗ данни!
+    edges {
+      cursor
+      # НЕ зареждаме node данни!
+    }
+  }
+}

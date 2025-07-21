@@ -1,0 +1,62 @@
+query getProductCategories($first: Int, $after: String, $slug: [String], $hideEmpty: Boolean = true) {
+  productCategories(first: $first, after: $after, where: { hideEmpty: $hideEmpty, slug: $slug }) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      slug
+      name
+      databaseId
+      id
+      description
+      count
+      uri
+      image {
+        ...Image
+      }
+      children(first: 25) {
+        nodes {
+          slug
+          name
+          databaseId
+          description
+          count
+          uri
+          image {
+            ...Image
+          }
+          parent {
+            node {
+              slug
+              name
+              databaseId
+            }
+          }
+          ...SeoCategoryFragment
+        }
+      }
+      parent {
+        node {
+          slug
+          name
+          databaseId
+        }
+      }
+      ...SeoCategoryFragment
+    }
+  }
+}
+
+fragment ProductCategory on ProductCategory {
+  count
+  databaseId
+  id
+  name
+  slug
+  image {
+    sourceUrl(size: MEDIUM_LARGE)
+    altText
+    title
+  }
+}

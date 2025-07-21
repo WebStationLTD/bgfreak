@@ -1,0 +1,5 @@
+fragment ExternalProduct on ExternalProduct {
+  databaseId
+  externalUrl
+  buttonText
+}
