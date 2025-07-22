@@ -37,7 +37,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       GQL_HOST: "https://bgfreak.admin-panels.com/graphql",
-      FRONT_END_URL: "https://woonuxt-ten.vercel.app",
+      FRONT_END_URL: "https://bgfreak.vercel.app",
       PRODUCT_CATEGORY_PERMALINK: "/produkt-kategoriya/",
       PRODUCT_TAG_PERMALINK: "/produkt-etiket/",
       PRODUCT_BRAND_PERMALINK: "/marka-produkt/",
@@ -71,7 +71,7 @@ export default defineNuxtConfig({
   },
 
   sitemap: {
-    siteUrl: "https://woonuxt-ten.vercel.app",
+    siteUrl: "https://bgfreak.vercel.app",
     excludes: [
       "/checkout/order-received/**",
       "/order-summary/**",
