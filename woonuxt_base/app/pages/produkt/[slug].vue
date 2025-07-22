@@ -224,13 +224,13 @@ const showProductFeatures = computed(() => {
           <div v-if="showProductFeatures" class="my-8">
             <div class="flex flex-col gap-3">
               <div v-if="warrantyText" class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <div class="flex items-center justify-center w-8 h-8 bg-[#9c0100] rounded-full">
+                <div class="flex items-center justify-center w-8 h-8 bg-[#dd3737] rounded-full">
                   <Icon name="ion:shield-checkmark" class="text-white" size="18" />
                 </div>
                 <span class="text-sm font-medium text-gray-700">{{ warrantyText }}</span>
               </div>
               <div v-if="deliveryText" class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <div class="flex items-center justify-center w-8 h-8 bg-[#9c0100] rounded-full">
+                <div class="flex items-center justify-center w-8 h-8 bg-[#dd3737] rounded-full">
                   <Icon name="ion:car" class="text-white" size="18" />
                 </div>
                 <span class="text-sm font-medium text-gray-700">{{ deliveryText }}</span>

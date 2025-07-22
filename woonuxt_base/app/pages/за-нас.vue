@@ -243,7 +243,7 @@
                 </div>
                 <div class="flex items-start">
                   <Icon name="ion:call" size="20" class="text-green-600 mr-2 mt-1" />
-                  <span><strong>Телефон:</strong> 0877 277 595</span>
+                  <span><strong>Телефон:</strong> 0876 360 518</span>
                 </div>
                 <div class="flex items-start">
                   <Icon name="ion:mail" size="20" class="text-blue-600 mr-2 mt-1" />

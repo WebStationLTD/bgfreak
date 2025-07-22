@@ -189,7 +189,7 @@
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
               <a href="tel:+359877277595" class="flex items-center bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors">
                 <Icon name="ion:call" size="20" class="mr-2" />
-                0877 277 595
+                0876 360 518
               </a>
               <a
                 href="mailto:office@leaderfitness.net"
@@ -212,7 +212,7 @@ const { frontEndUrl } = useHelpers();
 const pageTitle = 'Доставка - Условия, цени и срокове | Лидерфитнес ЕООД';
 const pageDescription =
   'Информация за доставка на спортно оборудване от Лидерфитнес. Безплатна доставка над 150 лв. Цени, срокове и условия за получаване на поръчки.';
-const canonicalUrl = `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/доставка/`;
+const canonicalUrl = `${frontEndUrl || 'https://bgfreak.vercel.app'}/доставка/`;
 
 useSeoMeta({
   title: pageTitle,

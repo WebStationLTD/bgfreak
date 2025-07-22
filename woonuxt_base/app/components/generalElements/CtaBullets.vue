@@ -109,7 +109,7 @@ const getCategoryAltText = (slug) => {
               73.6% 51.7%
             );
           "
-          class="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#9c0100] to-[#9c0100] opacity-60" />
+          class="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#dd3737] to-[#dd3737] opacity-60" />
       </div>
     </div>
   </div>
@@ -137,7 +137,7 @@ const getCategoryAltText = (slug) => {
             </p>
             <ul role="list" class="mt-10 grid grid-cols-1 gap-x-8 gap-y-3 text-base/7 text-gray-700 sm:grid-cols-2">
               <li v-for="benefit in fitnessBenefits" :key="benefit" class="flex gap-x-3">
-                <span class="h-7 w-5 flex-none text-[#9c0100]">
+                <span class="h-7 w-5 flex-none text-[#dd3737]">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-7 w-5">
                     <path
                       fill-rule="evenodd"
@@ -149,7 +149,7 @@ const getCategoryAltText = (slug) => {
               </li>
             </ul>
             <div class="mt-10 flex">
-              <NuxtLink to="/product-cat/фитнес-оборудване-и-аксесоари/" class="text-sm/6 font-normal text-[#9c0100] hover:text-gray-900">
+              <NuxtLink to="/product-cat/фитнес-оборудване-и-аксесоари/" class="text-sm/6 font-normal text-[#dd3737] hover:text-gray-900">
                 Разгледайте всички фитнес продукти <span aria-hidden="true">&rarr;</span>
               </NuxtLink>
             </div>
@@ -181,7 +181,7 @@ const getCategoryAltText = (slug) => {
               73.6% 51.7%
             );
           "
-          class="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#9c0100] to-[#9c0100] opacity-25" />
+          class="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#dd3737] to-[#dd3737] opacity-25" />
       </div>
     </div>
   </div>
@@ -253,7 +253,7 @@ const getCategoryAltText = (slug) => {
               73.6% 51.7%
             );
           "
-          class="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#9c0100] to-[#9c0100] opacity-60" />
+          class="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-[#dd3737] to-[#dd3737] opacity-60" />
       </div>
     </div>
   </div>

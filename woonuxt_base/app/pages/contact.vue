@@ -29,7 +29,7 @@
           </div>
           <h3 class="text-xl font-semibold mb-2">Телефон</h3>
           <p class="text-gray-600 mb-4">Обадете ни се в работно време</p>
-          <a href="tel:+359877277595" class="text-primary hover:text-primary-dark font-medium"> 0877 277 595 </a>
+          <a href="tel:+359877277595" class="text-primary hover:text-primary-dark font-medium"> 0876 360 518 </a>
         </div>
 
         <!-- Viber -->
@@ -39,7 +39,7 @@
           </div>
           <h3 class="text-xl font-semibold mb-2">Viber</h3>
           <p class="text-gray-600 mb-4">Пишете ни директно</p>
-          <a href="viber://chat?number=%2B359877277595" class="text-purple-600 hover:text-purple-700 font-medium"> 0877 277 595 </a>
+          <a href="viber://chat?number=%2B359877277595" class="text-purple-600 hover:text-purple-700 font-medium"> 0876 360 518 </a>
         </div>
 
         <!-- Адрес -->
@@ -284,7 +284,7 @@ const { t } = useI18n();
 useSeoMeta({
   title: 'Контакти - Лидерфитнес ЕООД',
   description:
-    'Свържете се с нас за всички ваши въпроси. Телефон: 0877 277 595, Имейл: office@leaderfitness.net, Адрес: гр. София 1303, бул. Христо Ботев № 67',
+    'Свържете се с нас за всички ваши въпроси. Телефон: 0876 360 518, Имейл: office@leaderfitness.net, Адрес: гр. София 1303, бул. Христо Ботев № 67',
 });
 </script>
 

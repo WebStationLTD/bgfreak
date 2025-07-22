@@ -116,7 +116,7 @@ useHead({
               <!-- Телефон -->
               <div class="flex items-center space-x-3">
                 <Icon name="ion:call-outline" size="20" class="text-gray-300 flex-shrink-0" />
-                <a href="tel:+359877277595" class="text-gray-300 hover:text-white transition-colors" itemprop="telephone"> 0877 277 595 </a>
+                <a href="tel:+359877277595" class="text-gray-300 hover:text-white transition-colors" itemprop="telephone"> 0876 360 518 </a>
               </div>
 
               <!-- Имейл -->

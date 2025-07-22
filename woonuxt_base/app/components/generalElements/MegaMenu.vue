@@ -142,7 +142,7 @@
             <div class="mt-8 pt-6 border-t border-gray-200 flex flex-wrap justify-center gap-4">
               <NuxtLink
                 to="/magazin"
-                class="inline-flex items-center gap-3 bg-[#9c0100] text-white px-6 py-3 rounded-xl hover:bg-[#000000] transition-colors text-base font-semibold shadow-md"
+                class="inline-flex items-center gap-3 bg-[#dd3737] text-white px-6 py-3 rounded-xl hover:bg-[#000000] transition-colors text-base font-semibold shadow-md"
                 @click="close">
                 <Icon name="ion:grid-outline" size="20" />
                 Всички продукти
