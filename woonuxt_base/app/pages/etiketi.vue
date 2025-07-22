@@ -17,7 +17,7 @@ useHead({
     { property: 'og:title', content: tagsTitle },
     { property: 'og:description', content: tagsDescription },
   ],
-  link: [{ rel: 'canonical', href: `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/etiketi` }],
+  link: [{ rel: 'canonical', href: `${frontEndUrl || 'https://bgfreak.vercel.app'}/etiketi` }],
 });
 </script>
 
@@ -41,7 +41,7 @@ useHead({
         <NuxtLink
           v-for="tag in productTags"
           :key="tag.databaseId"
-          :to="`/produkt-etiket/${tag.slug}`"
+          :to="`/product-tag/${tag.slug}`"
           class="block p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:border-primary transition-all duration-300 group">
           <div class="text-center">
             <h3 class="font-medium text-gray-900 group-hover:text-primary transition-colors duration-300">

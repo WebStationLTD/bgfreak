@@ -14,7 +14,7 @@ interface Category {
 
 export const useCategoryUrls = () => {
   const runtimeConfig = useRuntimeConfig();
-  const productCategoryPermalink = runtimeConfig?.public?.PRODUCT_CATEGORY_PERMALINK || '/produkt-kategoriya/';
+  const productCategoryPermalink = runtimeConfig?.public?.PRODUCT_CATEGORY_PERMALINK || '/product-cat/';
 
   /**
    * Генерира правилен URL за категория, като отчита йерархичната структура

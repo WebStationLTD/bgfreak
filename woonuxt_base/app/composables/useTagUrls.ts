@@ -18,7 +18,7 @@ const safeDecodeURI = (encodedString: string): string => {
 
 export const useTagUrls = () => {
   const runtimeConfig = useRuntimeConfig();
-  const productTagPermalink = runtimeConfig?.public?.PRODUCT_TAG_PERMALINK || '/produkt-etiket/';
+  const productTagPermalink = runtimeConfig?.public?.PRODUCT_TAG_PERMALINK || '/product-tag/';
 
   /**
    * Генерира правилен URL за етикет

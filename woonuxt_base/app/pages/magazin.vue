@@ -135,9 +135,7 @@ const generateSeoMeta = () => {
   }
 
   const canonicalUrl =
-    pageNumber === 1
-      ? `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/magazin`
-      : `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/magazin/page/${pageNumber}`;
+    pageNumber === 1 ? `${frontEndUrl || 'https://bgfreak.vercel.app'}/magazin` : `${frontEndUrl || 'https://bgfreak.vercel.app'}/magazin/page/${pageNumber}`;
 
   return {
     title: finalTitle,
@@ -187,26 +185,6 @@ if (shopSeo?.schema?.raw) {
   });
 }
 
-// Prev/Next links за pagination SEO - ПРЕМАХНАТА placeholder логика
-// const initialPrevNextLinks: any[] = [];
-
-// if (seoMeta.pageNumber > 1) {
-//   const prevUrl =
-//     seoMeta.pageNumber === 2
-//       ? `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/magazin`
-//       : `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/magazin/page/${seoMeta.pageNumber - 1}`;
-
-//   initialPrevNextLinks.push({ rel: 'prev', href: prevUrl });
-// }
-
-// // Добавяме next link изначално като placeholder - ще се обновява динамично
-// const nextUrl = `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/magazin/page/${seoMeta.pageNumber + 1}`;
-// initialPrevNextLinks.push({ rel: 'next', href: nextUrl });
-
-// useHead({
-//   link: initialPrevNextLinks,
-// });
-
 // Функция за динамично обновяване на next/prev links
 const updateNextPrevLinks = () => {
   const updatedLinks: any[] = [{ rel: 'canonical', href: seoMeta.canonicalUrl }]; // Винаги започваме с canonical
@@ -214,8 +192,8 @@ const updateNextPrevLinks = () => {
   if (seoMeta.pageNumber > 1) {
     const prevUrl =
       seoMeta.pageNumber === 2
-        ? `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/magazin`
-        : `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/magazin/page/${seoMeta.pageNumber - 1}`;
+        ? `${frontEndUrl || 'https://bgfreak.vercel.app'}/magazin`
+        : `${frontEndUrl || 'https://bgfreak.vercel.app'}/magazin/page/${seoMeta.pageNumber - 1}`;
 
     updatedLinks.push({ rel: 'prev', href: prevUrl });
   }
@@ -232,7 +210,7 @@ const updateNextPrevLinks = () => {
   }
 
   if (hasNextPage) {
-    const nextUrl = `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/magazin/page/${seoMeta.pageNumber + 1}`;
+    const nextUrl = `${frontEndUrl || 'https://bgfreak.vercel.app'}/magazin/page/${seoMeta.pageNumber + 1}`;
     updatedLinks.push({ rel: 'next', href: nextUrl });
   }
 

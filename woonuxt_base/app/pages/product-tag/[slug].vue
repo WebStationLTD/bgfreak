@@ -199,8 +199,8 @@ const generateTagSeoMeta = () => {
 
   const canonicalUrl =
     pageNumber === 1
-      ? `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/produkt-etiket/${slug}`
-      : `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/produkt-etiket/${slug}/page/${pageNumber}`;
+      ? `${frontEndUrl || 'https://bgfreak.vercel.app'}/product-tag/${slug}`
+      : `${frontEndUrl || 'https://bgfreak.vercel.app'}/product-tag/${slug}/page/${pageNumber}`;
 
   return {
     title: finalTitle,
@@ -249,8 +249,8 @@ const updateTagNextPrevLinks = () => {
   if (currentSeoMeta.pageNumber > 1) {
     const prevUrl =
       currentSeoMeta.pageNumber === 2
-        ? `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/produkt-etiket/${slug}`
-        : `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/produkt-etiket/${slug}/page/${currentSeoMeta.pageNumber - 1}`;
+        ? `${frontEndUrl || 'https://bgfreak.vercel.app'}/product-tag/${slug}`
+        : `${frontEndUrl || 'https://bgfreak.vercel.app'}/product-tag/${slug}/page/${currentSeoMeta.pageNumber - 1}`;
 
     updatedTagLinks.push({ rel: 'prev', href: prevUrl });
   }
@@ -268,7 +268,7 @@ const updateTagNextPrevLinks = () => {
   }
 
   if (hasNextPage) {
-    const nextUrl = `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/produkt-etiket/${slug}/page/${currentSeoMeta.pageNumber + 1}`;
+    const nextUrl = `${frontEndUrl || 'https://bgfreak.vercel.app'}/product-tag/${slug}/page/${currentSeoMeta.pageNumber + 1}`;
     updatedTagLinks.push({ rel: 'next', href: nextUrl });
   }
 
@@ -558,7 +558,7 @@ watch(
           if (newFilter) queryParams.set('filter', newFilter);
 
           const queryString = queryParams.toString();
-          const newUrl = `/produkt-etiket/${slug}${queryString ? `?${queryString}` : ''}`;
+          const newUrl = `/product-tag/${slug}${queryString ? `?${queryString}` : ''}`;
 
           // Обновяваме предишните стойности преди redirect
           previousQuery.value = {

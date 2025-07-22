@@ -39,7 +39,7 @@ query getProducts(
   $maxPrice: Float
   $onSale: Boolean
   $search: String
-  $attributeFilter: [WooNuxtTaxonomyFilterInput]
+  $attributes: ProductAttributeQueryInput
 ) {
   products(
     first: $first
@@ -52,7 +52,7 @@ query getProducts(
       maxPrice: $maxPrice
       onSale: $onSale
       search: $search
-      attributeFilter: $attributeFilter
+      attributes: $attributes
       orderby: { field: $orderby, order: $order }
       status: "publish"
     }
@@ -92,7 +92,7 @@ query getProductsOptimized(
   $maxPrice: Float
   $onSale: Boolean
   $search: String
-  $attributeFilter: [WooNuxtTaxonomyFilterInput]
+  $attributes: ProductAttributeQueryInput
 ) {
   products(
     first: $first
@@ -105,7 +105,7 @@ query getProductsOptimized(
       maxPrice: $maxPrice
       onSale: $onSale
       search: $search
-      attributeFilter: $attributeFilter
+      attributes: $attributes
       orderby: { field: $orderby, order: $order }
       status: "publish"
     }
@@ -149,7 +149,7 @@ query getProductCursors(
   $maxPrice: Float
   $onSale: Boolean
   $search: String
-  $attributeFilter: [WooNuxtTaxonomyFilterInput]
+  $attributes: ProductAttributeQueryInput
 ) {
   products(
     first: $first
@@ -161,7 +161,7 @@ query getProductCursors(
       maxPrice: $maxPrice
       onSale: $onSale
       search: $search
-      attributeFilter: $attributeFilter
+      attributes: $attributes
       orderby: { field: $orderby, order: $order }
       status: "publish"
     }

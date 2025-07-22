@@ -77,7 +77,7 @@ const getCategoryAltText = (slug) => {
               </li>
             </ul>
             <div class="mt-10 flex">
-              <NuxtLink to="/produkt-kategoriya/бокс/" class="text-sm/6 font-normal text-[#ffffff] hover:text-gray-300">
+              <NuxtLink to="/product-cat/бокс/" class="text-sm/6 font-normal text-[#ffffff] hover:text-gray-300">
                 Разгледайте всички боксови продукти <span aria-hidden="true">&rarr;</span>
               </NuxtLink>
             </div>
@@ -149,7 +149,7 @@ const getCategoryAltText = (slug) => {
               </li>
             </ul>
             <div class="mt-10 flex">
-              <NuxtLink to="/produkt-kategoriya/фитнес-оборудване-и-аксесоари/" class="text-sm/6 font-normal text-[#9c0100] hover:text-gray-900">
+              <NuxtLink to="/product-cat/фитнес-оборудване-и-аксесоари/" class="text-sm/6 font-normal text-[#9c0100] hover:text-gray-900">
                 Разгледайте всички фитнес продукти <span aria-hidden="true">&rarr;</span>
               </NuxtLink>
             </div>
@@ -221,7 +221,7 @@ const getCategoryAltText = (slug) => {
               </li>
             </ul>
             <div class="mt-10 flex">
-              <NuxtLink to="/produkt-kategoriya/дрехи/" class="text-sm/6 font-normal text-[#ffffff] hover:text-gray-300">
+              <NuxtLink to="/product-cat/дрехи/" class="text-sm/6 font-normal text-[#ffffff] hover:text-gray-300">
                 Разгледайте всички спортни дрехи <span aria-hidden="true">&rarr;</span>
               </NuxtLink>
             </div>

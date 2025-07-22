@@ -186,8 +186,8 @@ const generateBrandSeoMeta = () => {
 
   const canonicalUrl =
     pageNumber === 1
-      ? `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/marka-produkt/${slug}`
-      : `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/marka-produkt/${slug}/page/${pageNumber}`;
+      ? `${frontEndUrl || 'https://bgfreak.vercel.app'}/marka-produkt/${slug}`
+      : `${frontEndUrl || 'https://bgfreak.vercel.app'}/marka-produkt/${slug}/page/${pageNumber}`;
 
   return {
     title: finalTitle,
@@ -228,41 +228,32 @@ const updateBrandNextPrevLinks = () => {
   const currentSeoMeta = generateBrandSeoMeta();
   const updatedBrandLinks: any[] = [];
 
-  // Изчисляваме общия брой страници на база на реалния брой продукти
   const totalProductCount = realProductCount.value || matchingBrand?.count || 0;
   const totalPages = Math.ceil(totalProductCount / productsPerPage.value);
 
-  // Prev link
   if (currentSeoMeta.pageNumber > 1) {
     const prevUrl =
       currentSeoMeta.pageNumber === 2
-        ? `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/marka-produkt/${slug}`
-        : `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/marka-produkt/${slug}/page/${currentSeoMeta.pageNumber - 1}`;
-
+        ? `${frontEndUrl || 'https://bgfreak.vercel.app'}/marka-produkt/${slug}`
+        : `${frontEndUrl || 'https://bgfreak.vercel.app'}/marka-produkt/${slug}/page/${currentSeoMeta.pageNumber - 1}`;
     updatedBrandLinks.push({ rel: 'prev', href: prevUrl });
   }
 
-  // Next link - използваме точното изчисление на база реалния брой продукти
   let hasNextPage = false;
-
-  // При филтри разчитаме на pageInfo
   const hasFilters = route.query.filter;
   if (hasFilters) {
     hasNextPage = pageInfo?.hasNextPage || false;
   } else {
-    // БЕЗ филтри - използваме точния брой продукти
     hasNextPage = realProductCount.value ? currentSeoMeta.pageNumber < totalPages : pageInfo?.hasNextPage;
   }
 
   if (hasNextPage) {
-    const nextUrl = `${frontEndUrl || 'https://woonuxt-ten.vercel.app'}/marka-produkt/${slug}/page/${currentSeoMeta.pageNumber + 1}`;
+    const nextUrl = `${frontEndUrl || 'https://bgfreak.vercel.app'}/marka-produkt/${slug}/page/${currentSeoMeta.pageNumber + 1}`;
     updatedBrandLinks.push({ rel: 'next', href: nextUrl });
   }
 
-  // Canonical link винаги се обновява
   updatedBrandLinks.push({ rel: 'canonical', href: currentSeoMeta.canonicalUrl });
 
-  // КРИТИЧНО: Проверяваме дали има промяна преди обновяване
   const newLinksStr = JSON.stringify(updatedBrandLinks);
   if (newLinksStr !== lastLinksUpdate) {
     headLinks.value = updatedBrandLinks;

@@ -45,8 +45,8 @@ const hasSubcategories = computed(() => {
 const getSubcategoryUrl = (subcategory: Category): string => {
   if (!props.category?.slug || !subcategory?.slug) return '/';
 
-  // За подкатегориите използваме формата: /produkt-kategoriya/parent-slug/child-slug
-  return `/produkt-kategoriya/${props.category.slug}/${subcategory.slug}`;
+  // За подкатегориите използваме формата: /product-cat/parent-slug/child-slug
+  return `/product-cat/${props.category.slug}/${subcategory.slug}`;
 };
 </script>
 

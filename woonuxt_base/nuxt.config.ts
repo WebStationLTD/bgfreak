@@ -68,16 +68,16 @@ export default defineNuxtConfig({
       addPage('magazin-page-pager', '/magazin/page/:pageNumber', 'magazin.vue');
 
       // Йерархични маршрути за категории (parent/child)
-      addPage('produkt-kategoriya-parent-child', '/produkt-kategoriya/:parent/:child', 'produkt-kategoriya/[parent]/[child].vue');
-      addPage('produkt-kategoriya-parent-child-pager', '/produkt-kategoriya/:parent/:child/page/:pageNumber', 'produkt-kategoriya/[parent]/[child].vue');
+      addPage('product-cat-parent-child', '/product-cat/:parent/:child', 'product-cat/[parent]/[child].vue');
+      addPage('product-cat-parent-child-pager', '/product-cat/:parent/:child/page/:pageNumber', 'product-cat/[parent]/[child].vue');
 
       // Основни маршрути за категории (fallback за плоски URL-и)
-      addPage('produkt-kategoriya-slug', '/produkt-kategoriya/:categorySlug', 'produkt-kategoriya/[slug].vue');
-      addPage('produkt-kategoriya-page-pager', '/produkt-kategoriya/:categorySlug/page/:pageNumber', 'produkt-kategoriya/[slug].vue');
+      addPage('product-cat-slug', '/product-cat/:categorySlug', 'product-cat/[slug].vue');
+      addPage('product-cat-page-pager', '/product-cat/:categorySlug/page/:pageNumber', 'product-cat/[slug].vue');
 
       // Маршрути за етикети
-      addPage('produkt-etiket-slug', '/produkt-etiket/:tagSlug', 'produkt-etiket/[slug].vue');
-      addPage('produkt-etiket-page-pager', '/produkt-etiket/:tagSlug/page/:pageNumber', 'produkt-etiket/[slug].vue');
+      addPage('product-tag-slug', '/product-tag/:tagSlug', 'product-tag/[slug].vue');
+      addPage('product-tag-page-pager', '/product-tag/:tagSlug/page/:pageNumber', 'product-tag/[slug].vue');
 
       addPage('order-received', '/checkout/order-received/:orderId', 'order-summary.vue');
       addPage('order-summary', '/order-summary/:orderId', 'order-summary.vue');

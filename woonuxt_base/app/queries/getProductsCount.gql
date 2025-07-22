@@ -5,7 +5,7 @@ query getProductsCount(
   $maxPrice: Float
   $onSale: Boolean
   $search: String
-  $attributeFilter: [WooNuxtTaxonomyFilterInput]
+  $attributes: ProductAttributeQueryInput
   $first: Int = 1000
 ) {
   products(
@@ -18,7 +18,7 @@ query getProductsCount(
       maxPrice: $maxPrice
       onSale: $onSale
       search: $search
-      attributeFilter: $attributeFilter
+      attributes: $attributes
       status: "publish"
     }
   ) {

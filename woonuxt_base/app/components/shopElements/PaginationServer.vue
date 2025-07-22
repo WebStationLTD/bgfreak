@@ -13,16 +13,16 @@ const route = useRoute();
 // Cached computed properties за оптимизация
 const basePath = computed(() => {
   // Проверяваме за етикети първо
-  if ((route.name === 'produkt-etiket-slug' || route.name === 'produkt-etiket-page-pager') && (route.params.tagSlug || route.params.slug)) {
+  if ((route.name === 'product-tag-slug' || route.name === 'product-tag-page-pager') && (route.params.tagSlug || route.params.slug)) {
     const tagSlug = route.params.tagSlug || route.params.slug;
-    return `/produkt-etiket/${tagSlug}`;
+    return `/product-tag/${tagSlug}`;
   }
   // Проверяваме за етикети с path prefix
-  else if (route.path.startsWith('/produkt-etiket/')) {
+  else if (route.path.startsWith('/product-tag/')) {
     const pathSegments = route.path.split('/');
-    const tagSlug = pathSegments[2]; // /produkt-etiket/[slug]
+    const tagSlug = pathSegments[2]; // /product-tag/[slug]
     if (tagSlug && tagSlug !== 'page') {
-      return `/produkt-etiket/${tagSlug}`;
+      return `/product-tag/${tagSlug}`;
     }
   }
   // Проверяваме за марки първо
@@ -39,23 +39,19 @@ const basePath = computed(() => {
     }
   }
   // Проверяваме за йерархични категории (parent/child)
-  else if (
-    (route.name === 'produkt-kategoriya-parent-child' || route.name === 'produkt-kategoriya-parent-child-pager') &&
-    route.params.parent &&
-    route.params.child
-  ) {
-    const path = `/produkt-kategoriya/${route.params.parent}/${route.params.child}`;
+  else if ((route.name === 'product-cat-parent-child' || route.name === 'product-cat-parent-child-pager') && route.params.parent && route.params.child) {
+    const path = `/product-cat/${route.params.parent}/${route.params.child}`;
     return path;
   }
   // Проверяваме за родителски категории (slug)
-  else if (route.params.slug && route.path.startsWith('/produkt-kategoriya/')) {
-    return `/produkt-kategoriya/${route.params.slug}`;
+  else if (route.params.slug && route.path.startsWith('/product-cat/')) {
+    return `/product-cat/${route.params.slug}`;
   }
   // Проверяваме за новите български пътища (плоски категории)
-  else if (route.name === 'produkt-kategoriya-slug' && route.params.categorySlug) {
-    return `/produkt-kategoriya/${route.params.categorySlug}`;
-  } else if (route.path.startsWith('/produkt-kategoriya/') && route.params.categorySlug) {
-    return `/produkt-kategoriya/${route.params.categorySlug}`;
+  else if (route.name === 'product-cat-slug' && route.params.categorySlug) {
+    return `/product-cat/${route.params.categorySlug}`;
+  } else if (route.path.startsWith('/product-cat/') && route.params.categorySlug) {
+    return `/product-cat/${route.params.categorySlug}`;
   }
   return '/magazin';
 });

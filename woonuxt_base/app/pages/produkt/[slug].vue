@@ -8,7 +8,7 @@ const { addToCart, isUpdatingCart } = useCart();
 const { t } = useI18n();
 const slug = route.params.slug as string;
 const runtimeConfig = useRuntimeConfig();
-const productCategoryPermalink = runtimeConfig?.public?.PRODUCT_CATEGORY_PERMALINK || '/produkt-kategoriya/';
+const productCategoryPermalink = runtimeConfig?.public?.PRODUCT_CATEGORY_PERMALINK || '/product-cat/';
 const { generateTagUrl } = useTagUrls();
 
 const { data } = await useAsyncGql('getProduct', { slug });

@@ -25,7 +25,7 @@ const seoDescription =
   homeSeo?.metaDesc ||
   description ||
   'Открийте висококачествено спортно оборудване, фитнес уреди и аксесоари в нашия онлайн магазин. Бързи доставки, конкурентни цени и професионално обслужване.';
-const canonicalUrl = frontEndUrl || 'https://woonuxt-ten.vercel.app';
+const canonicalUrl = frontEndUrl || 'https://bgfreak.vercel.app';
 
 useSeoMeta({
   title: seoTitle,
@@ -64,7 +64,7 @@ if (homeSeo?.schema?.raw) {
   <main>
     <!-- <HeroBanner /> -->
 
-    <!-- <PromoSection /> -->
+    <PromoSection />
 
     <!-- ОРИГИНАЛНА СЕКЦИЯ С ВСИЧКИ КАТЕГОРИИ - ЗАКОМЕНТИРАНА 
     <section class="mt-4 mb-16 px-6">

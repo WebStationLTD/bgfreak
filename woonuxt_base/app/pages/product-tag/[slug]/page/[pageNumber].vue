@@ -1,12 +1,11 @@
 <script setup lang="ts">
-// Този файл автоматично препраща към child категория страницата
+// Този файл автоматично препраща към основната етикет страница
 // с правилните параметри за pagination
 
 const route = useRoute();
 
 // Извличаме параметрите
-const parentSlug = route.params.parent as string;
-const childSlug = route.params.child as string;
+const tagSlug = route.params.slug as string;
 const pageNumber = route.params.pageNumber as string;
 
 // Конструираме URL с query параметри
@@ -15,9 +14,9 @@ const queryParams = new URLSearchParams({
   page: pageNumber,
 });
 
-const redirectUrl = `/produkt-kategoriya/${parentSlug}/${childSlug}?${queryParams.toString()}`;
+const redirectUrl = `/product-tag/${tagSlug}?${queryParams.toString()}`;
 
-// Препращаме към child категория страницата
+// Препращаме към основната етикет страница
 await navigateTo(redirectUrl, {
   replace: true,
 });

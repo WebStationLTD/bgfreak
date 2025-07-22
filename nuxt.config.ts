@@ -38,8 +38,8 @@ export default defineNuxtConfig({
     public: {
       GQL_HOST: "https://bgfreak.admin-panels.com/graphql",
       FRONT_END_URL: "https://bgfreak.vercel.app",
-      PRODUCT_CATEGORY_PERMALINK: "/produkt-kategoriya/",
-      PRODUCT_TAG_PERMALINK: "/produkt-etiket/",
+      PRODUCT_CATEGORY_PERMALINK: "/product-cat/",
+      PRODUCT_TAG_PERMALINK: "/product-tag/",
       PRODUCT_BRAND_PERMALINK: "/marka-produkt/",
       PRODUCTS_PER_PAGE: 12,
       // ВРЕМЕННА конфигурация за тестване на атрибутите
@@ -152,7 +152,7 @@ export default defineNuxtConfig({
           "Cache-Control": "s-maxage=600",
         },
       },
-      "/produkt-kategoriya/**": {
+      "/product-cat/**": {
         isr: {
           expiration: 300, // 5 минути за категории
         },
@@ -160,7 +160,7 @@ export default defineNuxtConfig({
           "Cache-Control": "s-maxage=300",
         },
       },
-      "/produkt-etiket/**": {
+      "/product-tag/**": {
         isr: {
           expiration: 300, // 5 минути за етикети
         },
