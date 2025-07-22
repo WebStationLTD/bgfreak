@@ -18,7 +18,7 @@ const productColumns = [
 </script>
 
 <template>
-  <div class="relative overflow-hidden bg-gray-800">
+  <div class="relative overflow-hidden" style="background: linear-gradient(135deg, #1b1b1b, #a31919)">
     <div class="pt-16 pb-20 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
       <div class="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
         <div class="sm:max-w-lg">
