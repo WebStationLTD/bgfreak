@@ -7,6 +7,7 @@ const { products, isLoading, resetProductsState, pageInfo, productsPerPage, load
 const { storeSettings } = useAppConfig();
 const { frontEndUrl } = useHelpers();
 const route = useRoute();
+const hasEverLoaded = ref(false);
 
 const parentSlug = route.params.parent as string;
 const childSlug = route.params.child as string;
@@ -33,6 +34,7 @@ useHead({
 onMounted(async () => {
   resetProductsState();
   await loadProductsPage(pageNumber.value, [childSlug]);
+  hasEverLoaded.value = true;
 });
 
 watch(
@@ -44,6 +46,14 @@ watch(
   },
   { deep: true },
 );
+
+const shouldShowLoading = computed(() => {
+  return isLoading.value || !hasEverLoaded.value;
+});
+
+const shouldShowNoProducts = computed(() => {
+  return hasEverLoaded.value && !isLoading.value && (!products.value || products.value.length === 0);
+});
 </script>
 
 <template>
@@ -72,14 +82,17 @@ watch(
             </li>
           </ol>
         </nav>
-        <div v-if="isLoading" class="space-y-8">
-          <div class="flex items-center justify-between w-full gap-4 mb-8 c6">
+        <div v-if="shouldShowLoading" class="space-y-8">
+          <!-- Header skeleton -->
+          <div class="flex items-center justify-between w-full gap-4 mb-8">
             <div class="h-6 bg-gray-200 rounded-md w-32 animate-pulse"></div>
             <div class="flex items-center gap-4">
               <div class="h-8 bg-gray-200 rounded-md w-24 animate-pulse hidden lg:block"></div>
               <div class="h-8 bg-gray-200 rounded-md w-10 animate-pulse lg:hidden"></div>
             </div>
           </div>
+
+          <!-- Products grid skeleton -->
           <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
             <div v-for="i in 12" :key="i" class="space-y-3">
               <div class="aspect-square bg-gray-200 rounded-lg animate-pulse"></div>
@@ -90,13 +103,15 @@ watch(
               </div>
             </div>
           </div>
+
+          <!-- Pagination skeleton -->
           <div class="flex justify-center mt-8">
             <div class="flex gap-2">
               <div v-for="i in 5" :key="i" class="h-10 w-10 bg-gray-200 rounded-md animate-pulse"></div>
             </div>
           </div>
         </div>
-        <div v-else-if="products?.length" class="space-y-8">
+        <div v-else class="space-y-8">
           <div class="flex items-center justify-between w-full gap-4 mb-2 sm:mb-8">
             <ProductResultCount />
             <div class="flex items-center gap-4">
@@ -107,21 +122,11 @@ watch(
               </div>
             </div>
           </div>
-          <ProductGrid :products="products" />
+          <ProductGrid v-if="!shouldShowNoProducts" :products="products" />
+          <NoProductsFound v-if="shouldShowNoProducts">Няма намерени продукти в тази категория.</NoProductsFound>
           <PaginationServer v-if="category" :category-count="category.count" />
           <TaxonomyDescription v-if="category?.description" :description="category.description" :name="category.name" :max-height="200" />
         </div>
-        <NoProductsFound v-else-if="!isLoading && !products?.length">
-          <div class="text-center">
-            <h2 class="text-xl font-bold mb-4">Не са намерени продукти в тази категория</h2>
-            <div class="mt-4 text-sm text-gray-600">
-              <p>Опитайте да промените филтрите или изберете друга категория.</p>
-              <div v-if="category?.name && parentCategory?.name" class="mt-2">
-                <p>Категория: {{ parentCategory.name }} > {{ category.name }}</p>
-              </div>
-            </div>
-          </div>
-        </NoProductsFound>
       </main>
     </div>
   </div>

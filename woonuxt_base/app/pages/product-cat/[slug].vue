@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { useRoute, useHead, showError, useRuntimeConfig, useAsyncGql, onMounted, watch } from '#imports';
+import { useRoute, useHead, showError, useRuntimeConfig, useAsyncGql, onMounted, watch, ref, computed } from '#imports';
 import { useProducts, useAppConfig } from '#imports';
 
-const { products, loadProductsPage, resetProductsState } = useProducts();
+const { products, isLoading, loadProductsPage, resetProductsState } = useProducts();
 const { storeSettings } = useAppConfig();
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
+const hasEverLoaded = ref(false);
 
 const slug = (route.params.slug || route.params.categorySlug) as string;
 const pageNumber = Number(route.params.pageNumber) || 1;
@@ -32,6 +33,7 @@ useHead({
 onMounted(async () => {
   resetProductsState();
   await loadProductsPage(pageNumber, [slug]);
+  hasEverLoaded.value = true;
 });
 
 watch(
@@ -43,6 +45,14 @@ watch(
   },
   { deep: true },
 );
+
+const shouldShowLoading = computed(() => {
+  return isLoading.value || !hasEverLoaded.value;
+});
+
+const shouldShowNoProducts = computed(() => {
+  return hasEverLoaded.value && !isLoading.value && (!products.value || products.value.length === 0);
+});
 </script>
 
 <template>
@@ -55,20 +65,52 @@ watch(
       </aside>
 
       <main class="flex-1 min-w-0">
-        <div class="flex items-center justify-between w-full gap-4 mb-2 sm:mb-8">
-          <ProductResultCount />
-          <div class="flex items-center gap-4">
-            <OrderByDropdown class="hidden lg:inline-flex" v-if="storeSettings?.showOrderByDropdown" />
-            <div v-if="storeSettings?.showFilters" class="flex items-center gap-2 lg:hidden">
-              <span class="text-sm font-light">Филтри</span>
-              <ShowFilterTrigger />
+        <div v-if="shouldShowLoading" class="space-y-8">
+          <!-- Header skeleton -->
+          <div class="flex items-center justify-between w-full gap-4 mb-8">
+            <div class="h-6 bg-gray-200 rounded-md w-32 animate-pulse"></div>
+            <div class="flex items-center gap-4">
+              <div class="h-8 bg-gray-200 rounded-md w-24 animate-pulse hidden lg:block"></div>
+              <div class="h-8 bg-gray-200 rounded-md w-10 animate-pulse lg:hidden"></div>
+            </div>
+          </div>
+
+          <!-- Products grid skeleton -->
+          <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+            <div v-for="i in 12" :key="i" class="space-y-3">
+              <div class="aspect-square bg-gray-200 rounded-lg animate-pulse"></div>
+              <div class="space-y-2">
+                <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded w-2/3 animate-pulse"></div>
+                <div class="h-5 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination skeleton -->
+          <div class="flex justify-center mt-8">
+            <div class="flex gap-2">
+              <div v-for="i in 5" :key="i" class="h-10 w-10 bg-gray-200 rounded-md animate-pulse"></div>
             </div>
           </div>
         </div>
-        <SubcategoriesSection v-if="category.children?.nodes?.length && pageNumber === 1 && !route.query.filter" :category="category" />
-        <ProductGrid :products="products" />
-        <PaginationServer :category-count="category.count" />
-        <TaxonomyDescription v-if="category.description" :description="category.description" :name="category.name" :max-height="200" />
+        <div v-else>
+          <div class="flex items-center justify-between w-full gap-4 mb-2 sm:mb-8">
+            <ProductResultCount />
+            <div class="flex items-center gap-4">
+              <OrderByDropdown class="hidden lg:inline-flex" v-if="storeSettings?.showOrderByDropdown" />
+              <div v-if="storeSettings?.showFilters" class="flex items-center gap-2 lg:hidden">
+                <span class="text-sm font-light">Филтри</span>
+                <ShowFilterTrigger />
+              </div>
+            </div>
+          </div>
+          <SubcategoriesSection v-if="category.children?.nodes?.length && pageNumber === 1 && !route.query.filter" :category="category" />
+          <ProductGrid v-if="!shouldShowNoProducts" :products="products" />
+          <NoProductsFound v-if="shouldShowNoProducts">Няма намерени продукти в тази категория.</NoProductsFound>
+          <PaginationServer :category-count="category.count" />
+          <TaxonomyDescription v-if="category.description" :description="category.description" :name="category.name" :max-height="200" />
+        </div>
       </main>
     </div>
   </div>
