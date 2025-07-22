@@ -4,7 +4,7 @@ const runtimeConfig = useRuntimeConfig();
 const img = useImage();
 
 const logoUrl = runtimeConfig?.public?.LOGO ? img(runtimeConfig?.public?.LOGO) : null;
-const faviconUrl = '/LeadFitnesLogoRed.svg';
+const faviconUrl = '/bgfreak-logo.png';
 </script>
 
 <template>
