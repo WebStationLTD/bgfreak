@@ -81,11 +81,11 @@ if (homeSeo?.schema?.raw) {
     <!-- НОВА СЕКЦИЯ С РОДИТЕЛСКИ КАТЕГОРИИ И ПОДКАТЕГОРИИ -->
     <CategoriesAndInfoSection />
 
-    <NewProductsCarousel />
+    <!-- <NewProductsCarousel /> -->
 
     <!-- <BestProductCategory :categoryId="21" /> -->
 
-    <CtaBullets />
+    <!-- <CtaBullets /> -->
 
     <div class="container flex flex-wrap items-center justify-center my-16 text-center gap-x-8 gap-y-4 brand lg:justify-between">
       <img src="/images/logoipsum-211.svg" alt="Brand 1" width="132" height="35" />
@@ -96,7 +96,7 @@ if (homeSeo?.schema?.raw) {
       <img src="/images/logoipsum-215.svg" alt="Brand 6" width="132" height="40" />
     </div>
 
-    <CtaQuality />
+    <!-- <CtaQuality /> -->
 
     <!-- <CtaImage /> -->
 
