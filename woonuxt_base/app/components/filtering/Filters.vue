@@ -154,9 +154,9 @@ if (categorySlug && categorySlug.trim().length > 0) {
 onMounted(() => {
   if (!categorySlug || categorySlug.trim().length === 0) {
     // За /magazin - зареждаме асинхронно след mount
-    setTimeout(() => {
+    nextTick(() => {
       loadTerms();
-    }, 100);
+    });
   }
 });
 

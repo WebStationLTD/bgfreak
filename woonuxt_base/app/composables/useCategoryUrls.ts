@@ -1,10 +1,12 @@
 interface Category {
   slug?: string | null;
   name?: string | null;
+  databaseId?: number | null;
   parent?: {
     node?: {
       slug?: string | null;
       name?: string | null;
+      databaseId?: number | null;
     } | null;
   } | null;
   children?: {
@@ -17,57 +19,145 @@ export const useCategoryUrls = () => {
   const productCategoryPermalink = runtimeConfig?.public?.PRODUCT_CATEGORY_PERMALINK || '/product-cat/';
 
   /**
-   * Генерира правилен URL за категория, като отчита йерархичната структура
+   * Рекурсивно намира всички slug-ове в йерархията на категорията
    */
-  const generateCategoryUrl = (category: Category, allCategories: Category[] = []): string => {
-    return ensureValidUrl(category, allCategories);
+  const getCategoryPath = (targetSlug: string, allCategories: Category[]): string[] => {
+    const path: string[] = [];
+
+    const findCategoryRecursive = (categories: Category[], targetSlug: string, currentPath: string[]): boolean => {
+      for (const category of categories) {
+        if (category.slug === targetSlug) {
+          path.push(...currentPath, category.slug!);
+          return true;
+        }
+
+        if (category.children?.nodes) {
+          if (findCategoryRecursive(category.children.nodes, targetSlug, [...currentPath, category.slug!])) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    findCategoryRecursive(allCategories, targetSlug, []);
+    return path;
   };
 
   /**
-   * Намира родителската категория за дадена категория в списъка от всички категории
+   * Генерира правилен URL за категория от всяко ниво
    */
-  const findParentCategory = (targetCategory: Category, allCategories: Category[]): Category | null => {
-    if (!targetCategory.slug) return null;
+  const generateCategoryUrl = (category: Category, allCategories: Category[] = []): string => {
+    if (!category?.slug) return '/categories';
 
-    for (const category of allCategories) {
+    const path = getCategoryPath(category.slug, allCategories);
+
+    if (path.length === 0) {
+      return `${productCategoryPermalink}${category.slug}`;
+    }
+
+    return `${productCategoryPermalink}${path.join('/')}`;
+  };
+
+  /**
+   * Генерира URL директно от път от slug-ове
+   */
+  const generateUrlFromPath = (slugPath: string[]): string => {
+    if (!slugPath || slugPath.length === 0) return '/categories';
+    return `${productCategoryPermalink}${slugPath.join('/')}`;
+  };
+
+  /**
+   * Намира категория по slug в йерархията
+   */
+  const findCategoryBySlug = (targetSlug: string, categories: Category[]): Category | null => {
+    for (const category of categories) {
+      if (category.slug === targetSlug) {
+        return category;
+      }
+
       if (category.children?.nodes) {
-        const found = category.children.nodes.find((child) => child.slug === targetCategory.slug);
-        if (found) {
-          return category;
-        }
+        const found = findCategoryBySlug(targetSlug, category.children.nodes);
+        if (found) return found;
       }
     }
     return null;
   };
 
   /**
-   * Проверява дали даден URL е валиден, ако не - връща fallback
+   * Получава пълната йерархия на категорията като обекти
    */
-  const ensureValidUrl = (category: Category, allCategories: Category[] = []): string => {
-    if (!category?.slug) return '/categories';
+  const getCategoryHierarchy = (targetSlug: string, allCategories: Category[]): Category[] => {
+    const hierarchy: Category[] = [];
 
-    const safeSlug = safeDecodeURI(category.slug);
+    const findHierarchyRecursive = (categories: Category[], targetSlug: string, currentHierarchy: Category[]): boolean => {
+      for (const category of categories) {
+        if (category.slug === targetSlug) {
+          hierarchy.push(...currentHierarchy, category);
+          return true;
+        }
 
-    // Първо опитваме йерархичен URL
-    const parentSlug = category.parent?.node?.slug;
-    if (parentSlug) {
-      const safeParentSlug = safeDecodeURI(parentSlug);
-      // Проверяваме дали parent категорията съществува в allCategories
-      const parentExists = allCategories.some((cat) => cat.slug === parentSlug);
-      if (parentExists) {
-        return `${productCategoryPermalink}${safeParentSlug}/${safeSlug}`;
+        if (category.children?.nodes) {
+          if (findHierarchyRecursive(category.children.nodes, targetSlug, [...currentHierarchy, category])) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    findHierarchyRecursive(allCategories, targetSlug, []);
+    return hierarchy;
+  };
+
+  /**
+   * Парсва URL пътека и валидира дали съществува
+   */
+  const validateCategoryPath = (slugPath: string[], allCategories: Category[]): boolean => {
+    if (slugPath.length === 0) return false;
+
+    let currentCategories = allCategories;
+
+    for (let i = 0; i < slugPath.length; i++) {
+      const slug = slugPath[i];
+      const found = currentCategories.find((cat) => cat.slug === slug);
+
+      if (!found) return false;
+
+      // Ако сме на последния slug, връщаме true
+      if (i === slugPath.length - 1) {
+        return true;
+      }
+
+      // Ако не сме на последния slug, трябва да има деца за да продължим
+      if (found.children?.nodes) {
+        currentCategories = found.children.nodes;
+      } else {
+        // Няма деца, но имаме още slug-ове - невалиден път
+        return false;
       }
     }
 
-    // Ако parent в category.parent не съществува, търсим в allCategories
-    const parentCategory = findParentCategory(category, allCategories);
-    if (parentCategory && parentCategory.slug) {
-      const safeParentSlug = safeDecodeURI(parentCategory.slug);
-      return `${productCategoryPermalink}${safeParentSlug}/${safeSlug}`;
-    }
+    return true;
+  };
 
-    // Fallback към плосък URL
-    return `${productCategoryPermalink}${safeSlug}`;
+  /**
+   * Получава родителските категории за breadcrumb
+   */
+  const getBreadcrumbData = (targetSlug: string, allCategories: Category[]) => {
+    const hierarchy = getCategoryHierarchy(targetSlug, allCategories);
+
+    return hierarchy.map((category, index) => ({
+      name: category.name,
+      slug: category.slug,
+      url: generateUrlFromPath(
+        hierarchy
+          .slice(0, index + 1)
+          .map((c) => c.slug)
+          .filter(Boolean) as string[],
+      ),
+      isLast: index === hierarchy.length - 1,
+    }));
   };
 
   /**
@@ -75,26 +165,6 @@ export const useCategoryUrls = () => {
    */
   const hasChildren = (category: Category): boolean => {
     return Boolean(category.children?.nodes && category.children.nodes.length > 0);
-  };
-
-  /**
-   * Проверява дали дадена категория е подкатегория (има родител)
-   */
-  const isSubcategory = (category: Category, allCategories: Category[] = []): boolean => {
-    return Boolean(category.parent?.node?.slug || findParentCategory(category, allCategories));
-  };
-
-  /**
-   * Получава пълният път от родител до дете като стринг
-   */
-  const getCategoryPath = (category: Category, allCategories: Category[] = []): string => {
-    const parentCategory = category.parent?.node || findParentCategory(category, allCategories);
-
-    if (parentCategory) {
-      return `${parentCategory.name} > ${category.name}`;
-    }
-
-    return category.name || '';
   };
 
   /**
@@ -111,11 +181,13 @@ export const useCategoryUrls = () => {
 
   return {
     generateCategoryUrl,
-    ensureValidUrl,
-    findParentCategory,
-    hasChildren,
-    isSubcategory,
+    generateUrlFromPath,
+    findCategoryBySlug,
     getCategoryPath,
+    getCategoryHierarchy,
+    validateCategoryPath,
+    getBreadcrumbData,
+    hasChildren,
     safeDecodeURI,
     productCategoryPermalink,
   };

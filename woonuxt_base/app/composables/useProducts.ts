@@ -181,9 +181,9 @@ export function useProducts() {
       if (timeoutId) clearTimeout(timeoutId);
       isLoading.value = false;
 
-      // Принудително завършване на Nuxt loading indicator ако се е "закачил"
+      // Принудително завършване на Nuxt loading indicator
       if (process.client) {
-        setTimeout(() => {
+        nextTick(() => {
           const loadingIndicator = document.querySelector('.nuxt-loading-indicator');
           if (loadingIndicator && getComputedStyle(loadingIndicator).opacity !== '0') {
             (loadingIndicator as HTMLElement).style.width = '100%';
@@ -191,7 +191,7 @@ export function useProducts() {
               (loadingIndicator as HTMLElement).style.opacity = '0';
             }, 100);
           }
-        }, 500);
+        });
       }
     }
   }

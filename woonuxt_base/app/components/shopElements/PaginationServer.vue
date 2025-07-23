@@ -38,25 +38,26 @@ const basePath = computed(() => {
       return `/marka-produkt/${brandSlug}`;
     }
   }
-  // Проверяваме за йерархични категории (parent/child)
-  else if ((route.name === 'product-cat-parent-child' || route.name === 'product-cat-parent-child-pager') && route.params.parent && route.params.child) {
-    const path = `/product-cat/${route.params.parent}/${route.params.child}`;
-    return path;
+  // НОВА ЛОГИКА: Проверяваме за универсални продуктови категории
+  else if (route.name === 'product-cat-universal' || route.name === 'product-cat-universal-pager') {
+    // Извличаме пътя от route.path и премахваме /page/N частта
+    const fullPath = route.path;
+    const categoryPath = fullPath.replace(/\/page\/\d+$/, '');
+    return categoryPath;
   }
-  // Проверяваме за родителски категории (slug)
-  else if (route.params.slug && route.path.startsWith('/product-cat/')) {
-    return `/product-cat/${route.params.slug}`;
-  }
-  // Проверяваме за новите български пътища (плоски категории)
-  else if (route.name === 'product-cat-slug' && route.params.categorySlug) {
-    return `/product-cat/${route.params.categorySlug}`;
-  } else if (route.path.startsWith('/product-cat/') && route.params.categorySlug) {
-    return `/product-cat/${route.params.categorySlug}`;
+  // Проверяваме за продуктови категории с path prefix
+  else if (route.path.startsWith('/product-cat/')) {
+    const fullPath = route.path;
+    const categoryPath = fullPath.replace(/\/page\/\d+$/, '');
+    return categoryPath;
   }
   return '/magazin';
 });
 
-const queryParams = computed(() => ({ ...route.query }));
+const queryParams = computed(() => {
+  const { page, ...otherParams } = route.query;
+  return otherParams;
+});
 
 // Функция за генериране на URL за дадена страница (само за computed properties)
 const buildPageUrl = (pageNumber: number) => {

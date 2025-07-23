@@ -67,13 +67,9 @@ export default defineNuxtConfig({
 
       addPage('magazin-page-pager', '/magazin/page/:pageNumber', 'magazin.vue');
 
-      // Йерархични маршрути за категории (parent/child)
-      addPage('product-cat-parent-child', '/product-cat/:parent/:child', 'product-cat/[parent]/[child].vue');
-      addPage('product-cat-parent-child-pager', '/product-cat/:parent/:child/page/:pageNumber', 'product-cat/[parent]/[child].vue');
-
-      // Основни маршрути за категории (fallback за плоски URL-и)
-      addPage('product-cat-slug', '/product-cat/:categorySlug', 'product-cat/[slug].vue');
-      addPage('product-cat-page-pager', '/product-cat/:categorySlug/page/:pageNumber', 'product-cat/[slug].vue');
+      // Универсален маршрут за категории с произволен брой нива
+      addPage('product-cat-universal', '/product-cat/:categories+', 'product-cat/[...categories].vue');
+      addPage('product-cat-universal-pager', '/product-cat/:categories+/page/:pageNumber', 'product-cat/[...categories].vue');
 
       // Маршрути за етикети
       addPage('product-tag-slug', '/product-tag/:tagSlug', 'product-tag/[slug].vue');

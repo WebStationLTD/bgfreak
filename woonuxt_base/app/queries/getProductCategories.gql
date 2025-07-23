@@ -15,7 +15,7 @@ query getProductCategories($first: Int, $after: String, $slug: [String], $hideEm
       image {
         ...Image
       }
-      children(first: 25) {
+      children(first: 50) {
         nodes {
           slug
           name
@@ -31,6 +31,69 @@ query getProductCategories($first: Int, $after: String, $slug: [String], $hideEm
               slug
               name
               databaseId
+            }
+          }
+          children(first: 50) {
+            nodes {
+              slug
+              name
+              databaseId
+              description
+              count
+              uri
+              image {
+                ...Image
+              }
+              parent {
+                node {
+                  slug
+                  name
+                  databaseId
+                }
+              }
+              children(first: 50) {
+                nodes {
+                  slug
+                  name
+                  databaseId
+                  description
+                  count
+                  uri
+                  image {
+                    ...Image
+                  }
+                  parent {
+                    node {
+                      slug
+                      name
+                      databaseId
+                    }
+                  }
+                  children(first: 50) {
+                    nodes {
+                      slug
+                      name
+                      databaseId
+                      description
+                      count
+                      uri
+                      image {
+                        ...Image
+                      }
+                      parent {
+                        node {
+                          slug
+                          name
+                          databaseId
+                        }
+                      }
+                      ...SeoCategoryFragment
+                    }
+                  }
+                  ...SeoCategoryFragment
+                }
+              }
+              ...SeoCategoryFragment
             }
           }
           ...SeoCategoryFragment

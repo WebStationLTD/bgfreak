@@ -79,7 +79,7 @@ if (homeSeo?.schema?.raw) {
     -->
 
     <!-- НОВА СЕКЦИЯ С РОДИТЕЛСКИ КАТЕГОРИИ И ПОДКАТЕГОРИИ -->
-    <FeaturedCategories :categories="productCategories" />
+    <CategoriesAndInfoSection />
 
     <NewProductsCarousel />
 

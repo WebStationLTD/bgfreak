@@ -24,12 +24,13 @@ interface Category {
 
 interface Props {
   category: Category;
+  currentPath?: string[];
 }
 
 const props = defineProps<Props>();
 
 const { FALLBACK_IMG } = useHelpers();
-const { generateCategoryUrl } = useCategoryUrls();
+const { generateUrlFromPath } = useCategoryUrls();
 
 // Получаваме подкатегориите от текущата родителска категория
 const subcategories = computed(() => {
@@ -43,9 +44,16 @@ const hasSubcategories = computed(() => {
 
 // Генерираме правилния URL за подкатегория
 const getSubcategoryUrl = (subcategory: Category): string => {
-  if (!props.category?.slug || !subcategory?.slug) return '/';
+  if (!subcategory?.slug) return '/';
 
-  // За подкатегориите използваме формата: /product-cat/parent-slug/child-slug
+  // Ако имаме текущия път, добавяме subcategory slug-а към него
+  if (props.currentPath && props.currentPath.length > 0) {
+    const newPath = [...props.currentPath, subcategory.slug];
+    return generateUrlFromPath(newPath);
+  }
+
+  // Fallback - за старите нива на съвместимост
+  if (!props.category?.slug) return '/';
   return `/product-cat/${props.category.slug}/${subcategory.slug}`;
 };
 </script>

@@ -46,13 +46,13 @@ onMounted(() => {
             items: 2,
           },
           1024: {
-            items: 3,
+            items: 4,
           },
           1280: {
             items: 4,
           },
           1536: {
-            items: 6,
+            items: 4,
           },
         },
       });
