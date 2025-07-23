@@ -9,7 +9,6 @@ const error = ref<any>(null);
 const reservedRoutes = [
   'categories',
   'magazin',
-  'contact',
   'thank-you',
   'order-summary',
   'wishlist',

@@ -56,9 +56,9 @@ onMounted(() => {
     <div class="my-8 prose">
       <p>{{ $t('messages.shop.orderThanks') }} 🎉</p>
       <p>
-        {{ $t('messages.shop.contactUs') }}
-        <NuxtLink to="/contact" class="text-primary underline">{{ $t('messages.general.contact') }}</NuxtLink
-        >.
+        За въпроси можете да се свържете с нас на телефон
+        <a href="tel:+359876360518" class="text-primary underline">(+359) 876 360 518</a>
+        в работно време от 10:00 до 17:00, понеделник до петък.
       </p>
       <p>
         {{ $t('messages.shop.continueShopping') }}
