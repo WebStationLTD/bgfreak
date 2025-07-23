@@ -25,7 +25,7 @@ const isMobileScreen = computed(() => width.value < 1024);
       <div class="lg:hidden">
         <button
           @click="isMobileMenuOpen = !isMobileMenuOpen"
-          class="w-full flex justify-between items-center text-lg font-bold mb-3 text-gray-800 py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors">
+          class="w-full flex justify-between items-center text-lg font-bold text-gray-800 py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors">
           Категории
           <PlusIcon v-if="!isMobileMenuOpen" class="h-5 w-5" />
           <MinusIcon v-else class="h-5 w-5" />
