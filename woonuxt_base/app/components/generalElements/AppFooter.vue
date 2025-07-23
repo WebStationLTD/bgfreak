@@ -93,11 +93,7 @@ useHead({
       <div class="border-t border-gray-700 pt-6 mt-12">
         <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
           <div class="mb-4 md:mb-0">
-            <p>© 2025 Лидерфитнес. Всички права запазени.</p>
-          </div>
-          <div class="text-xs">
-            <span>Powered by </span>
-            <a href="https://webstation.bg/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors font-medium"> WebStation™ </a>
+            <p>© 2025 BgFreak. Всички права запазени.</p>
           </div>
         </div>
       </div>
