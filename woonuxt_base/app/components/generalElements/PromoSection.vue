@@ -22,9 +22,9 @@ const productColumns = [
     <div class="pt-16 pb-20 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
       <div class="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
         <div class="sm:max-w-lg">
-          <h1 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">Фитнес уреди и аксесоари</h1>
+          <h1 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">Анаболни стероиди</h1>
           <p class="mt-4 text-xl text-white">
-            Лидерфитнес е водещ вносител и представител на голямо разнообразие от бойна екипировка, фитнес уреди и аксесоари.
+            Искаш да си купиш истински стероиди онлайн – направи го от най-големия реално работещ склад за анаболи – BGFreak.STORE
           </p>
         </div>
         <div>

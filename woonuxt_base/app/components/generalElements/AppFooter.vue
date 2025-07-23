@@ -42,34 +42,23 @@ useHead({
             <Logo />
           </div>
           <div class="text-gray-300 text-sm leading-relaxed">
-            <p itemprop="description">Лидерфитнес е водещ вносител и представител на голямо разнообразие от бойна екипировка, фитнес уреди и аксесоари.</p>
+            <p itemprop="description">
+              Само при нас ще намериш 100% оригинални продукти от доказани в бранша марки. Ние ти даваме дискретна “стелт” доставка и гарантирани изродски
+              постижения!
+            </p>
           </div>
         </div>
 
         <!-- Дясна част: 4 колони с информация -->
         <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Колона 1: Полезно -->
+          <!-- Колона 1: Навигация -->
           <div>
-            <h3 class="text-white font-semibold text-lg mb-4">Полезно</h3>
-            <nav class="space-y-2" aria-label="Полезни линкове">
+            <h3 class="text-white font-semibold text-lg mb-4">Навигация</h3>
+            <nav class="space-y-2" aria-label="Основни страници">
               <ul class="text-sm space-y-2">
-                <li><NuxtLink to="/" class="text-gray-300 hover:text-white transition-colors">Начало</NuxtLink></li>
-                <li><NuxtLink to="/общи-условия/" class="text-gray-300 hover:text-white transition-colors">Общи условия</NuxtLink></li>
-                <li>
-                  <NuxtLink to="/политика-за-поверителност-и-защита-на/" class="text-gray-300 hover:text-white transition-colors"
-                    >Политика за поверителност</NuxtLink
-                  >
-                </li>
-                <li><NuxtLink to="/доставка/" class="text-gray-300 hover:text-white transition-colors">Доставка</NuxtLink></li>
-                <li>
-                  <a href="/pdfs/return-policy.pdf" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition-colors"
-                    >Условия за връщане</a
-                  >
-                </li>
-                <li><NuxtLink to="/за-нас/" class="text-gray-300 hover:text-white transition-colors">За нас</NuxtLink></li>
-                <li><a href="/example/facilities" class="text-gray-300 hover:text-white transition-colors">Оборудвани обекти</a></li>
-                <li><NuxtLink to="/contact" class="text-gray-300 hover:text-white transition-colors">Контакти</NuxtLink></li>
-                <li><a href="/example/articles" class="text-gray-300 hover:text-white transition-colors">Статии</a></li>
+                <li><NuxtLink to="/dostavka" class="text-gray-300 hover:text-white transition-colors">Доставка</NuxtLink></li>
+                <li><NuxtLink to="/faqs" class="text-gray-300 hover:text-white transition-colors">FAQs</NuxtLink></li>
+                <li><NuxtLink to="/price-match" class="text-gray-300 hover:text-white transition-colors">Price Match</NuxtLink></li>
               </ul>
             </nav>
           </div>
@@ -79,23 +68,13 @@ useHead({
             <h3 class="text-white font-semibold text-lg mb-4">Топ категории</h3>
             <nav class="space-y-2" aria-label="Основни категории продукти">
               <ul class="text-sm space-y-2">
-                <li><a href="/product-cat/бокс" class="text-gray-300 hover:text-white transition-colors">Бокс</a></li>
-                <li><a href="/product-cat/бокс/боксов-чувал" class="text-gray-300 hover:text-white transition-colors">Боксови чували</a></li>
-                <li><a href="/product-cat/бокс/боксови-ръкавици" class="text-gray-300 hover:text-white transition-colors">Боксови ръкавици</a></li>
-                <li><a href="/product-cat/дрехи" class="text-gray-300 hover:text-white transition-colors">Дрехи</a></li>
-                <li><a href="/product-cat/дрехи/детски-дрехи" class="text-gray-300 hover:text-white transition-colors">Детски дрехи</a></li>
-                <li><a href="/product-cat/дрехи/суичъри" class="text-gray-300 hover:text-white transition-colors">Суичъри</a></li>
+                <li><a href="/product-cat/анаболи" class="text-gray-300 hover:text-white transition-colors">Анаболи</a></li>
+                <li><a href="/product-cat/секс-стимуланти" class="text-gray-300 hover:text-white transition-colors">Секс стимуланти</a></li>
                 <li>
-                  <a href="/product-cat/фитнес-оборудване-и-аксесоари" class="text-gray-300 hover:text-white transition-colors"
-                    >Фитнес оборудване и аксесоари</a
-                  >
+                  <a href="/product-cat/анаболи/инжекционни-форми-стероиди" class="text-gray-300 hover:text-white transition-colors">Инжекционни форми</a>
                 </li>
-                <li>
-                  <a href="/product-cat/фитнес-оборудване-и-аксесоари/бягаща-пътека" class="text-gray-300 hover:text-white transition-colors">Бягащи пътеки</a>
-                </li>
-                <li>
-                  <a href="/product-cat/фитнес-оборудване-и-аксесоари/велоергометри" class="text-gray-300 hover:text-white transition-colors">Велоергометри</a>
-                </li>
+                <li><a href="/product-cat/пептиди-peptides" class="text-gray-300 hover:text-white transition-colors">Пептиди</a></li>
+                <li><a href="/product-cat/хормон-на-растежа-hgh" class="text-gray-300 hover:text-white transition-colors">Хормон на растежа (HGH)</a></li>
               </ul>
             </nav>
           </div>
@@ -103,50 +82,9 @@ useHead({
           <!-- Колона 3: Контакти -->
           <div>
             <h3 class="text-white font-semibold text-lg mb-4">Контакти</h3>
-            <div class="space-y-4 text-sm">
-              <!-- Адрес -->
-              <div class="flex items-start space-x-3" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
-                <Icon name="ion:location-outline" size="20" class="text-gray-300 mt-0.5 flex-shrink-0" />
-                <div>
-                  <span itemprop="streetAddress">бул. Христо Ботев 67</span><br />
-                  <span itemprop="postalCode">1303</span> <span itemprop="addressLocality">София</span>
-                </div>
-              </div>
-
-              <!-- Телефон -->
-              <div class="flex items-center space-x-3">
-                <Icon name="ion:call-outline" size="20" class="text-gray-300 flex-shrink-0" />
-                <a href="tel:+359877277595" class="text-gray-300 hover:text-white transition-colors" itemprop="telephone"> 0876 360 518 </a>
-              </div>
-
-              <!-- Имейл -->
-              <div class="flex items-center space-x-3">
-                <Icon name="ion:mail-outline" size="20" class="text-gray-300 flex-shrink-0" />
-                <a href="mailto:office@leaderfitness.net" class="text-gray-300 hover:text-white transition-colors" itemprop="email">
-                  office@leaderfitness.net
-                </a>
-              </div>
-
-              <!-- Социални мрежи -->
-              <div class="flex items-center space-x-4 pt-2">
-                <a
-                  href="https://www.facebook.com/www.leaderfitness.net/"
-                  class="text-gray-300 hover:text-white transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook профил">
-                  <Icon name="ion:logo-facebook" size="24" />
-                </a>
-                <a
-                  href="https://www.instagram.com/liderfitness/"
-                  class="text-gray-300 hover:text-white transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram профил">
-                  <Icon name="ion:logo-instagram" size="24" />
-                </a>
-              </div>
-            </div>
+            <p>Можете да се свържете с наш телефонен оператор от 10:00 до 17:00, от понеделник до петък на тел. (+359) 876 360 518</p>
+            <br />
+            <p>Можете да използвате и 24 часовия ни онлайн съпорт през иконката долу вляво на Вашия браузър.</p>
           </div>
         </div>
       </div>
