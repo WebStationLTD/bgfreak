@@ -21,7 +21,7 @@ const isMobileScreen = computed(() => width.value < 1024);
 
 <template>
   <aside class="w-full lg:w-1/4">
-    <div class="bg-gray-50 rounded-lg shadow-lg p-4 sticky top-4">
+    <div class="bg-gray-50 rounded-lg shadow-lg p-2 sm:p-4 sticky top-4">
       <div class="lg:hidden">
         <button
           @click="isMobileMenuOpen = !isMobileMenuOpen"
