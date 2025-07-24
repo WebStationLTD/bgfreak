@@ -175,7 +175,7 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 import { ChevronDownIcon } from '@heroicons/vue/20/solid';
 
-const { generateCategoryUrl, ensureValidUrl } = useCategoryUrls();
+const { generateCategoryUrl } = useCategoryUrls();
 
 // Зареждаме всички категории за правилно генериране на URL-и
 const { data, pending } = await useAsyncGql('getProductCategories', {
@@ -197,7 +197,7 @@ const productCategories = computed(() => {
 
 // Функция за генериране на правилен URL за категория
 const getCategoryUrl = (category) => {
-  return ensureValidUrl(category, allCategories.value);
+  return generateCategoryUrl(category, allCategories.value);
 };
 </script>
 
