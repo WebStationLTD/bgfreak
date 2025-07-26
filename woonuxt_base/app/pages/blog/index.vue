@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { setPosts, posts, pageInfo } = useBlog();
-let blogTitle = 'Статии, новини и ревюта на марки и продукти - Лидерфитнес';
+let blogTitle = 'Статии, новини и ревюта на марки и продукти - BgFreak';
 let blogDescription = 'Статии, новини и ревюта на марки и продукти. Следете нашите новини, както и страницата ни във Facebook | Leaderfitness.com';
 let seoDataSet = false;
 const debugData = ref(null);
@@ -17,7 +17,7 @@ try {
   seoDataSet = true;
 } catch (error) {
   useHead({
-    title: 'Статии, новини и ревюта на марки и продукти - Лидерфитнес',
+    title: 'Статии, новини и ревюта на марки и продукти - BgFreak',
     meta: [
       {
         name: 'description',
