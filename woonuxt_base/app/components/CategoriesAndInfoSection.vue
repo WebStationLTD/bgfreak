@@ -3,6 +3,8 @@ import { ref, computed } from 'vue';
 import { PlusIcon, MinusIcon } from '@heroicons/vue/24/outline';
 import { useWindowSize } from '@vueuse/core';
 import CategoryItem from './CategoryItem.vue';
+import TopProductsCarousel from './TopProductsCarousel.vue';
+import OnSaleProductsCarousel from './OnSaleProductsCarousel.vue';
 
 // Зареждаме всички категории, включително празните, за да покажем пълната структура
 const { data } = await useAsyncGql('getProductCategories', { first: 100, hideEmpty: false });
@@ -79,6 +81,15 @@ const isMobileScreen = computed(() => width.value < 1024);
           <NewProductsCarousel />
         </div>
       </main>
+    </div>
+
+    <!-- Нови секции с карусели - с пълната ширина на контейнера -->
+    <div class="mt-16">
+      <TopProductsCarousel />
+    </div>
+
+    <div class="mt-8">
+      <OnSaleProductsCarousel />
     </div>
   </section>
 </template>

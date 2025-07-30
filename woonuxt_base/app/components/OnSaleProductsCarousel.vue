@@ -1,4 +1,4 @@
-<!-- Използваме Tiny-Slider за по-лека и бърза карусел имплементация -->
+<!-- Карусел за продукти на промоция -->
 <script setup lang="ts">
 import { ProductsOrderByEnum } from '#woo';
 import { onMounted, onUnmounted, ref, computed, nextTick } from 'vue';
@@ -10,13 +10,14 @@ declare global {
   }
 }
 
-// Взимаме последните 12 нови продукта, сортирани по дата
-const { data: newProductsData } = await useAsyncGql('getProducts', {
+// Взимаме 12 продукта на промоция
+const { data: onSaleProductsData } = await useAsyncGql('getProducts', {
   first: 12,
-  orderby: ProductsOrderByEnum.DATE,
+  onSale: true,
+  orderby: ProductsOrderByEnum.POPULARITY,
 });
 
-const newProducts = computed(() => newProductsData.value?.products?.nodes || []);
+const onSaleProducts = computed(() => onSaleProductsData.value?.products?.nodes || []);
 
 // Референция към контейнера на Tiny-Slider
 const sliderContainerRef = ref<HTMLElement | null>(null);
@@ -44,7 +45,7 @@ onMounted(() => {
       slider = window.tns({
         container: sliderContainerRef.value,
         items: 1,
-        slideBy: 'page',
+        slideBy: 1,
         gutter: 20,
         mouseDrag: true,
         swipeAngle: false,
@@ -60,13 +61,13 @@ onMounted(() => {
             items: 2,
           },
           1024: {
-            items: 4,
+            items: 6,
           },
           1280: {
-            items: 4,
+            items: 6,
           },
           1536: {
-            items: 4,
+            items: 6,
           },
         },
       });
@@ -84,10 +85,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section v-if="newProducts.length" class="my-4">
+  <section v-if="onSaleProducts.length" class="my-4">
     <div class="flex items-end justify-between mb-8">
-      <h2 class="text-2xl font-semibold md:text-3xl px-4">{{ $t('messages.shop.newArrivals') }}</h2>
-      <NuxtLink class="text-primary px-4" to="/magazin">{{ $t('messages.general.viewAll') }}</NuxtLink>
+      <h2 class="text-2xl font-semibold md:text-3xl px-4">Продукти на промоция</h2>
+      <NuxtLink class="text-primary px-4" to="/magazin?onSale=true">{{ $t('messages.general.viewAll') }}</NuxtLink>
     </div>
 
     <client-only>
@@ -112,7 +113,7 @@ onUnmounted(() => {
           <div class="carousel-container">
             <!-- Tiny-Slider контейнер -->
             <div ref="sliderContainerRef" class="tiny-slider">
-              <div v-for="(product, index) in newProducts" :key="product.id" class="tiny-slide carousel-slide">
+              <div v-for="(product, index) in onSaleProducts" :key="product.id" class="tiny-slide carousel-slide">
                 <div
                   class="product-card rounded-lg overflow-hidden border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300 h-full bg-white p-2">
                   <ProductCard :node="product" :index="index" />

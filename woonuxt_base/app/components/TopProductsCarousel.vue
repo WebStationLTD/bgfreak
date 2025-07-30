@@ -1,6 +1,5 @@
-<!-- Използваме Tiny-Slider за по-лека и бърза карусел имплементация -->
+<!-- Карусел за топ продукти със статичен масив от ID-та -->
 <script setup lang="ts">
-import { ProductsOrderByEnum } from '#woo';
 import { onMounted, onUnmounted, ref, computed, nextTick } from 'vue';
 
 // Дефиниране на типа на tns за TypeScript
@@ -10,13 +9,16 @@ declare global {
   }
 }
 
-// Взимаме последните 12 нови продукта, сортирани по дата
-const { data: newProductsData } = await useAsyncGql('getProducts', {
-  first: 12,
-  orderby: ProductsOrderByEnum.DATE,
+// Статичен масив от ID-та на топ продукти - тук можете да слагате които искате продукти
+// ВАЖНО: Сложете реални ID-та (databaseId) на продукти от вашия WordPress/WooCommerce
+const TOP_PRODUCTS_IDS = [71865, 6828, 6832, 6811, 6830, 74041, 6803, 74874, 26719, 9992, 33489, 73763];
+
+// Взимаме продуктите по техните ID-та
+const { data: topProductsData } = await useAsyncGql('getProductsByIds', {
+  ids: TOP_PRODUCTS_IDS,
 });
 
-const newProducts = computed(() => newProductsData.value?.products?.nodes || []);
+const topProducts = computed(() => topProductsData.value?.products?.nodes || []);
 
 // Референция към контейнера на Tiny-Slider
 const sliderContainerRef = ref<HTMLElement | null>(null);
@@ -44,7 +46,7 @@ onMounted(() => {
       slider = window.tns({
         container: sliderContainerRef.value,
         items: 1,
-        slideBy: 'page',
+        slideBy: 1,
         gutter: 20,
         mouseDrag: true,
         swipeAngle: false,
@@ -60,13 +62,13 @@ onMounted(() => {
             items: 2,
           },
           1024: {
-            items: 4,
+            items: 6,
           },
           1280: {
-            items: 4,
+            items: 6,
           },
           1536: {
-            items: 4,
+            items: 6,
           },
         },
       });
@@ -84,9 +86,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section v-if="newProducts.length" class="my-4">
+  <section v-if="topProducts.length" class="my-4">
     <div class="flex items-end justify-between mb-8">
-      <h2 class="text-2xl font-semibold md:text-3xl px-4">{{ $t('messages.shop.newArrivals') }}</h2>
+      <h2 class="text-2xl font-semibold md:text-3xl px-4">Топ продукти</h2>
       <NuxtLink class="text-primary px-4" to="/magazin">{{ $t('messages.general.viewAll') }}</NuxtLink>
     </div>
 
@@ -112,7 +114,7 @@ onUnmounted(() => {
           <div class="carousel-container">
             <!-- Tiny-Slider контейнер -->
             <div ref="sliderContainerRef" class="tiny-slider">
-              <div v-for="(product, index) in newProducts" :key="product.id" class="tiny-slide carousel-slide">
+              <div v-for="(product, index) in topProducts" :key="product.id" class="tiny-slide carousel-slide">
                 <div
                   class="product-card rounded-lg overflow-hidden border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-300 h-full bg-white p-2">
                   <ProductCard :node="product" :index="index" />

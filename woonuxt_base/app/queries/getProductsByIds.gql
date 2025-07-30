@@ -1,10 +1,18 @@
 query getProductsByIds($ids: [Int]) {
-  products(where: { include: $ids }, first: 10) {
+  products(where: { include: $ids }, first: 12) {
     nodes {
       databaseId
+      id
       name
       slug
+      type
+      averageRating
+      reviewCount
       shortDescription
+      ...Terms
+      ...ProductCategories
+      ...ProductWithAttributes
+      ...PwbBrands
       ...SimpleProduct
       ...VariableProduct
       ...ExternalProduct
