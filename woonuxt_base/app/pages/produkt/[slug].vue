@@ -138,6 +138,19 @@ const deliveryText = computed(() => {
 const showProductFeatures = computed(() => {
   return warrantyText.value || deliveryText.value;
 });
+
+// Добавяме логика за точки
+const { getProductPoints, hasPointsReward, calculateEarnedPoints } = usePoints();
+
+const productPointsData = computed(() => {
+  const currentProduct = activeVariation.value || product.value;
+  return getProductPoints(currentProduct);
+});
+
+const earnedPointsForQuantity = computed(() => {
+  const currentProduct = activeVariation.value || product.value;
+  return calculateEarnedPoints(currentProduct, quantity.value);
+});
 </script>
 
 <template>
@@ -189,6 +202,9 @@ const showProductFeatures = computed(() => {
           </div>
 
           <div class="mb-8 font-light prose prose-lg max-w-none" v-html="product.shortDescription || product.description" />
+
+          <!-- Секция за бонус точки -->
+          <ProductPoints :product="product" :variation="activeVariation" :quantity="quantity" :show-total-info="false" />
 
           <hr />
 
