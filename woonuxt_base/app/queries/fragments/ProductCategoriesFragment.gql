@@ -1,3 +1,5 @@
+# import "./ImageFragment.gql"
+
 fragment ProductCategories on Product {
   productCategories {
     nodes {
@@ -5,9 +7,16 @@ fragment ProductCategories on Product {
       slug
       name
       count
+      image {
+        ...Image
+      }
       parent {
         node {
           slug
+          name
+          image {
+            ...Image
+          }
         }
       }
     }

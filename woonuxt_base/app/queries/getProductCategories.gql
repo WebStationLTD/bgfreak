@@ -31,6 +31,9 @@ query getProductCategories($first: Int, $after: String, $slug: [String], $hideEm
               slug
               name
               databaseId
+              image {
+                ...Image
+              }
             }
           }
           children(first: 50) {
@@ -49,6 +52,9 @@ query getProductCategories($first: Int, $after: String, $slug: [String], $hideEm
                   slug
                   name
                   databaseId
+                  image {
+                    ...Image
+                  }
                 }
               }
               children(first: 50) {
@@ -85,6 +91,9 @@ query getProductCategories($first: Int, $after: String, $slug: [String], $hideEm
                           slug
                           name
                           databaseId
+                          image {
+                            ...Image
+                          }
                         }
                       }
                       ...SeoCategoryFragment
@@ -104,6 +113,9 @@ query getProductCategories($first: Int, $after: String, $slug: [String], $hideEm
           slug
           name
           databaseId
+          image {
+            ...Image
+          }
         }
       }
       ...SeoCategoryFragment
