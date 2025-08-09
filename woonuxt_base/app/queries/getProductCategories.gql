@@ -73,6 +73,9 @@ query getProductCategories($first: Int, $after: String, $slug: [String], $hideEm
                       slug
                       name
                       databaseId
+                      image {
+                        ...Image
+                      }
                     }
                   }
                   children(first: 50) {

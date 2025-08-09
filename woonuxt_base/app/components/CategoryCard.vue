@@ -42,7 +42,7 @@ const categoryUrl = computed(() => {
       :width="imgWidth"
       :height="imgHeight"
       class="absolute inset-0 object-cover w-full h-full"
-      :src="node.image?.sourceUrl || FALLBACK_IMG"
+      :src="node.image?.sourceUrl || node.image?.src || FALLBACK_IMG"
       :alt="node.image?.altText || node.name || ''"
       :title="node.image?.title || node.name || ''"
       :loading="imageLoading"
