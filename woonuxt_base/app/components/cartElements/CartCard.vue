@@ -16,6 +16,47 @@ const regularPrice = computed(() => parseFloat(productType.value.rawRegularPrice
 const salePrice = computed(() => parseFloat(productType.value.rawSalePrice));
 const salePercentage = computed(() => Math.round(((regularPrice.value - salePrice.value) / regularPrice.value) * 100) + '%');
 
+// Функция за преобразуване на slug към име на термин от продукта
+const getTermNameFromSlug = (slug, attributeName) => {
+  if (!item.product?.node?.attributes?.nodes) return slug;
+
+  // Търсим атрибута по име - проверяваме различни формати
+  const attribute = item.product.node.attributes.nodes.find((attr) => {
+    if (!attr.name) return false;
+
+    // Точно съвпадение
+    if (attr.name === attributeName) return true;
+
+    // Проверяваме с pa_ префикс
+    if (attr.name === `pa_${attributeName}`) return true;
+
+    // Проверяваме без pa_ префикс
+    if (attr.name.replace('pa_', '') === attributeName) return true;
+
+    // Проверяваме ако attributeName има pa_ а attr.name няма
+    if (attributeName.startsWith('pa_') && attr.name === attributeName.replace('pa_', '')) return true;
+
+    return false;
+  });
+
+  if (!attribute?.terms?.nodes) {
+    // console.log('CartCard: Не намерих атрибут за:', attributeName, 'в продукт:', item.product.node.name);
+    // console.log('Налични атрибути:', item.product.node.attributes.nodes.map((a) => a.name));
+    return slug;
+  }
+
+  // Търсим термина по slug
+  const term = attribute.terms.nodes.find((term) => term.slug === slug);
+
+  if (!term) {
+    // console.log('CartCard: Не намерих термин с slug:', slug, 'в атрибут:', attribute.name);
+    // console.log('Налични термини:', attribute.terms.nodes.map((t) => ({ slug: t.slug, name: t.name })));
+    return slug;
+  }
+
+  return term.name || slug;
+};
+
 // Показване на атрибутите на вариацията
 const variationAttributes = computed(() => {
   if (!item.variation?.node?.attributes?.nodes) return '';
@@ -30,6 +71,8 @@ const variationAttributes = computed(() => {
         razmer: 'Размер',
         size: 'Размер',
         цвят: 'Цвят',
+        tsvyat: 'Цвят',
+        cvyat: 'Цвят',
         color: 'Цвят',
         материал: 'Материал',
         material: 'Материал',
@@ -47,10 +90,25 @@ const variationAttributes = computed(() => {
         // Ако декодирането се провали, оставяме оригинала
       }
 
+      // Допълнително декодиране за различни encoding формати
+      const commonEncodings = {
+        tsvyat: 'цвят',
+        cvyat: 'цвят',
+        razmer: 'размер',
+        material: 'материал',
+      };
+
+      if (commonEncodings[attrName.toLowerCase()]) {
+        attrName = commonEncodings[attrName.toLowerCase()];
+      }
+
       const mappedName = nameMap[attrName.toLowerCase()];
       const displayName = mappedName || attrName.charAt(0).toUpperCase() + attrName.slice(1);
 
-      return `${displayName}: ${attr.value}`;
+      // Преобразуваме slug-а към името на термина
+      const termName = getTermNameFromSlug(attr.value, attr.name);
+
+      return `${displayName}: ${termName}`;
     })
     .filter(Boolean)
     .join(' | ');

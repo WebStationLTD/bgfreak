@@ -148,12 +148,26 @@ const attributeNames = computed(() => {
         // Ако декодирането се провали, оставяме оригинала
       }
 
+      // Допълнително декодиране за различни encoding формати
+      const commonEncodings: { [key: string]: string } = {
+        tsvyat: 'цвят',
+        cvyat: 'цвят',
+        razmer: 'размер',
+        material: 'материал',
+      };
+
+      if (commonEncodings[cleanName.toLowerCase()]) {
+        cleanName = commonEncodings[cleanName.toLowerCase()];
+      }
+
       // Hardcoded mapping за често използваните атрибути
       const nameMap: { [key: string]: string } = {
         размер: 'Размер',
         razmer: 'Размер',
         size: 'Размер',
         цвят: 'Цвят',
+        tsvyat: 'Цвят',
+        cvyat: 'Цвят',
         color: 'Цвят',
         материал: 'Материал',
         material: 'Материал',
@@ -176,6 +190,63 @@ const attributeNames = computed(() => {
 const primaryAttributeName = computed((): string => {
   return (attributeNames.value[0] as string) || 'Вариации';
 });
+
+// Функция за преобразуване на slug към име на термин
+const getTermNameFromSlug = (slug: string, attributeName: string): string => {
+  if (!props.node?.attributes?.nodes) return slug;
+
+  // Търсим атрибута по име - проверяваме различни формати
+  const attribute = props.node.attributes.nodes.find((attr: any) => {
+    if (!attr.name) return false;
+
+    // Точно съвпадение
+    if (attr.name === attributeName) return true;
+
+    // Проверяваме с pa_ префикс
+    if (attr.name === `pa_${attributeName}`) return true;
+
+    // Проверяваме без pa_ префикс
+    if (attr.name.replace('pa_', '') === attributeName) return true;
+
+    // Проверяваме ако attributeName има pa_ а attr.name няма
+    if (attributeName.startsWith('pa_') && attr.name === attributeName.replace('pa_', '')) return true;
+
+    return false;
+  });
+
+  if (!attribute?.terms?.nodes) {
+    // console.log('Не намерих атрибут за:', attributeName, 'в продукт:', props.node.name);
+    // console.log('Налични атрибути:', props.node.attributes.nodes.map((a) => a.name));
+    return slug;
+  }
+
+  // Търсим термина по slug
+  const term = attribute.terms.nodes.find((term: any) => term.slug === slug);
+
+  if (!term) {
+    // console.log('Не намерих термин с slug:', slug, 'в атрибут:', attribute.name);
+    // console.log('Налични термини:', attribute.terms.nodes.map((t) => ({ slug: t.slug, name: t.name })));
+    return slug;
+  }
+
+  return term.name || slug;
+};
+
+// Функция за показване на името на вариацията вместо slug
+const getVariationDisplayName = (variation: any): string => {
+  if (!variation?.attributes?.nodes?.length) return variation?.name || '';
+
+  return variation.attributes.nodes
+    .map((attr: any) => {
+      if (!attr.value) return '';
+
+      // Опитваме се да намерим името на термина вместо slug-а
+      const termName = getTermNameFromSlug(attr.value, attr.name);
+      return termName;
+    })
+    .filter(Boolean)
+    .join(' / ');
+};
 
 // Сортирани вариации за използване в селекта
 const sortedVariations = computed(() => {
@@ -225,15 +296,7 @@ const sortedVariations = computed(() => {
               :key="variation.databaseId"
               :value="variation.databaseId"
               :selected="selectedVariationId === variation.databaseId">
-              <template v-if="variation.attributes?.nodes?.length">
-                {{
-                  variation.attributes.nodes
-                    .map((attr) => attr.value)
-                    .filter(Boolean)
-                    .join(' / ')
-                }}
-              </template>
-              <template v-else>{{ variation.name }}</template>
+              {{ getVariationDisplayName(variation) || variation.name }}
             </option>
           </select>
         </div>

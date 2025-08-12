@@ -89,6 +89,22 @@ fragment VariableProductGrid on VariableProduct {
     ...Image
     producCardSourceUrl: sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
   }
+  # Добавяме атрибутите на продукта за да можем да преобразуваме slug-овете
+  attributes {
+    nodes {
+      name
+      label
+      ... on GlobalProductAttribute {
+        terms {
+          nodes {
+            name
+            slug
+            databaseId
+          }
+        }
+      }
+    }
+  }
   variations(first: 10) {
     nodes {
       name
