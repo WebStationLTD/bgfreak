@@ -263,7 +263,7 @@ if (categoriesSeo?.schema?.raw) {
 }
 
 /* Responsive дизайн */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .parent-category-card {
     max-width: 280px;
     margin: 0 auto;
@@ -276,6 +276,18 @@ if (categoriesSeo?.schema?.raw) {
 
   .simple-categories-group .grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Центриране на заглавията на малки екрани */
+  .flex.items-center h2,
+  .flex.items-center h3 {
+    text-align: center;
+    flex: 1;
+    margin: 0 1rem;
+  }
+
+  .flex.items-center .h-1 {
+    display: none;
   }
 }
 
