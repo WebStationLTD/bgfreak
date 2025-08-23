@@ -98,6 +98,7 @@ useHead({
   title: pageTitle,
   meta: [
     { name: 'description', content: computed(() => category?.seo?.metaDesc || category?.description) },
+    { name: 'robots', content: 'index, follow' },
     { property: 'og:title', content: computed(() => category?.seo?.opengraphTitle || pageTitle.value) },
   ],
   link: [{ rel: 'canonical', href: canonicalUrl }],

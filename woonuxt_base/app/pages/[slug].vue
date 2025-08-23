@@ -113,7 +113,7 @@ try {
         name: 'description',
         content: 'Възникна грешка при зареждане на публикацията',
       },
-      { name: 'robots', content: 'noindex' },
+      { name: 'robots', content: 'index, follow' },
     ],
   });
 } finally {

@@ -17,6 +17,15 @@ onMounted(() => {
     }
   }
 });
+
+// SEO настройки
+useHead({
+  title: 'Благодарим за поръчката - BGFreak',
+  meta: [
+    { name: 'description', content: 'Благодарим за поръчката в BGFreak. Поръчката е успешно обработена.' },
+    { name: 'robots', content: 'noindex, follow' },
+  ],
+});
 </script>
 
 <template>

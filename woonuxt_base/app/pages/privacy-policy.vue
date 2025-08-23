@@ -1,3 +1,13 @@
+<script setup>
+useHead({
+  title: 'Privacy Policy - BGFreak',
+  meta: [
+    { name: 'description', content: 'Privacy Policy for BGFreak website - how we collect, use and protect your personal data.' },
+    { name: 'robots', content: 'index, follow' },
+  ],
+});
+</script>
+
 <template>
   <main class="container">
     <div class="prose max-w-full my-8">

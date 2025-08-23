@@ -8,6 +8,7 @@ const showLoader = computed(() => !cart.value && !viewer.value);
 
 useSeoMeta({
   title: `My Account`,
+  robots: 'noindex, follow',
 });
 </script>
 

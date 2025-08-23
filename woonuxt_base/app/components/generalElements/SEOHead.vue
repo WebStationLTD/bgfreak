@@ -40,22 +40,9 @@ const twitter = wooNuxtSEO?.find((item) => item?.provider === 'twitter') ?? null
 
 // Създаваме правилния robots meta tag
 const robotsContent = () => {
-  let robots = [];
-
-  // Yoast връща string стойности, не boolean
-  if (info.seo?.metaRobotsNoindex === 'noindex') {
-    robots.push('noindex');
-  } else {
-    robots.push('index'); // default или ако е 'index'
-  }
-
-  if (info.seo?.metaRobotsNofollow === 'nofollow') {
-    robots.push('nofollow');
-  } else {
-    robots.push('follow'); // default или ако е 'follow'
-  }
-
-  return robots.join(', ');
+  // ВАЖНО: За всички продукти винаги използваме 'index, follow'
+  // независимо от Yoast SEO настройките, защото продуктите са важни за SEO
+  return 'index, follow';
 };
 
 // Добавяме schema.org структурирани данни чрез useHead
