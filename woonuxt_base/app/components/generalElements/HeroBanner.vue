@@ -17,6 +17,7 @@
       <h2 class="text-lg font-bold md:mb-4 lg:text-3xl">The New Year Collection</h2>
       <div class="max-w-sm mb-8 text-md font-light lg:max-w-md text-balance">
         <p>Our latest collection is here. Discover the latest trends and styles for the new year.</p>
+        <p class="mt-4 text-red-600 font-bold">🚀 ТЕСТ: Git workflow работи! VPS е свързан с GitHub! 🎯</p>
       </div>
       <NuxtLink class="px-6 py-3 font-bold text-white bg-gray-800 rounded-xl hover:bg-gray-800" to="/magazin">Shop now</NuxtLink>
     </div>
