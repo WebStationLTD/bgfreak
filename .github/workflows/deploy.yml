@@ -1,0 +1,42 @@
+name: Deploy to VPS
+
+# Кога да се изпълнява
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Изтегли кода от GitHub
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Настрой Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      # 3. Инсталирай dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Build апликацията
+      - name: Build application
+        run: npm run generate
+
+      # 5. Deploy към VPS
+      - name: Deploy to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 101.99.94.10
+          username: bgfreak
+          password: ${{ secrets.VPS_PASSWORD }}
+          source: ".output/public/*"
+          target: "/home/bgfreak/public_html/"
+          strip_components: 2
+          overwrite: true
