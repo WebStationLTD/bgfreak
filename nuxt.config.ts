@@ -36,8 +36,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      GQL_HOST: "https://bgfreak.admin-panels.com/graphql",
-      FRONT_END_URL: "https://bgfreak.vercel.app",
+      GQL_HOST: "https://admin.bgfreak.store/graphql",
+      FRONT_END_URL: "https://bgfreak.store",
       PRODUCT_CATEGORY_PERMALINK: "/product-cat/",
       PRODUCT_TAG_PERMALINK: "/product-tag/",
       PRODUCT_BRAND_PERMALINK: "/marka-produkt/",
@@ -64,14 +64,14 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [
-        { rel: "preconnect", href: "https://bgfreak.admin-panels.com" },
-        { rel: "dns-prefetch", href: "https://bgfreak.admin-panels.com" },
+        { rel: "preconnect", href: "https://admin.bgfreak.store" },
+        { rel: "dns-prefetch", href: "https://admin.bgfreak.store" },
       ],
     },
   },
 
   sitemap: {
-    siteUrl: "https://bgfreak.vercel.app",
+    siteUrl: "https://bgfreak.store",
     excludes: [
       "/checkout/order-received/**",
       "/order-summary/**",

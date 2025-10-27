@@ -40,3 +40,4 @@ jobs:
           target: "/home/bgfreak/public_html/"
           strip_components: 2
           overwrite: true
+
