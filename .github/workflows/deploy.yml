@@ -41,3 +41,4 @@ jobs:
           target: "/home/bgfreak/nodejs-apps/bgfreak/"
           strip_components: 2
           overwrite: true
+          debug: true
