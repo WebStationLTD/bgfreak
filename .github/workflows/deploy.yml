@@ -38,6 +38,6 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 20203
           source: ".output/public/*"
-          target: "/home/bgfreak/public_html/"
+          target: "/home/bgfreak/nodejs-apps/bgfreak/"
           strip_components: 2
           overwrite: true
