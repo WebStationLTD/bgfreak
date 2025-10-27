@@ -93,7 +93,7 @@ export default defineNuxtConfig({
   "graphql-client": {
     clients: {
       default: {
-        host: "https://bgfreak.admin-panels.com/graphql",
+        host: "https://admin.bgfreak.store/graphql",
         retainQuery: true,
         tokenStorage: {
           cookieOptions: {
