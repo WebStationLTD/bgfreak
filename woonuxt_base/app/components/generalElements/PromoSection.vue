@@ -24,7 +24,7 @@ const productColumns = [
         <div class="sm:max-w-lg">
           <h1 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">Анаболни стероиди</h1>
           <p class="mt-4 text-xl text-white">
-            Искаш да си купиш истински стероиди онлайн – направи го от най-големия реално работещ склад за анаболи – Bgfreak.Store
+            Искаш да си купиш истински стероиди онлайн – направи го от най-големия реално работещ склад за анаболи – Bgfreak.Store1
           </p>
         </div>
         <div>
