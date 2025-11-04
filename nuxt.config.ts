@@ -34,6 +34,14 @@ export default defineNuxtConfig({
     inlineSSRStyles: false, // Намалява размера на инлайн CSS
   },
 
+  // За правилен SSG build
+  ssr: true,
+  
+  // SPA fallback за 404 страници
+  generate: {
+    fallback: true, // Създава 404.html и използва SPA fallback
+  },
+
   runtimeConfig: {
     public: {
       GQL_HOST: "https://admin.bgfreak.store/graphql",
@@ -112,6 +120,8 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
+      // Crawl links автоматично - ще генерира всички намерени линкове
+      crawlLinks: true,
       routes: [
         "/",
         "/magazin",
@@ -128,74 +138,33 @@ export default defineNuxtConfig({
     minify: true,
     compressPublicAssets: true,
     routeRules: {
-      // Генерирани по време на билд
-      "/": { static: true },
-      "/magazin": {
-        // isr: {
-        //   expiration: 300, // 5 минути за продукти
-        // },
-        headers: {
-          "Cache-Control": "s-maxage=300",
-        },
-      },
-      "/categories": { static: true },
-      "/etiketi": { static: true },
-      "/contact": { static: true },
-      "/blog": { static: true },
-
-      // Частично кеширани с ISR (Incremental Static Regeneration)
-      "/produkt/**": {
-        isr: {
-          expiration: 600, // 10 минути
-        },
-        headers: {
-          "Cache-Control": "s-maxage=600",
-        },
-      },
-      "/product-cat/**": {
-        isr: {
-          expiration: 300, // 5 минути за категории
-        },
-        headers: {
-          "Cache-Control": "s-maxage=300",
-        },
-      },
-      "/product-tag/**": {
-        isr: {
-          expiration: 300, // 5 минути за етикети
-        },
-        headers: {
-          "Cache-Control": "s-maxage=300",
-        },
-      },
-      "/marka-produkt/**": {
-        isr: {
-          expiration: 300, // 5 минути за марки
-        },
-        headers: {
-          "Cache-Control": "s-maxage=300",
-        },
-      },
-
-      // Блог постове с ISR
-      "/blog/**": {
-        isr: {
-          expiration: 1800, // 30 минути за блог постове
-        },
-        headers: {
-          "Cache-Control": "s-maxage=1800",
-        },
-      },
-
-      // Странци с SSR, без кеш
-      "/checkout/**": { ssr: true, cache: false },
-      "/cart": { ssr: true, cache: false },
-      "/my-account/**": { ssr: true, cache: false },
+      // ✅ САМО ЗА СТАТИЧЕН SSG - БЕЗ ISR!
+      "/": { prerender: true },
+      "/magazin": { prerender: true },
+      "/magazin/**": { prerender: true },
+      "/categories": { prerender: true },
+      "/etiketi": { prerender: true },
+      "/marki": { prerender: true },
+      "/contact": { prerender: true },
+      "/blog": { prerender: true },
+      "/blog/**": { prerender: true },
+      
+      // Продуктови страници - SSG
+      "/produkt/**": { prerender: true },
+      "/product-cat/**": { prerender: true },
+      "/product-tag/**": { prerender: true },
+      "/marka-produkt/**": { prerender: true },
+      
+      // Динамични страници - SPA fallback
+      "/checkout/**": { ssr: false },
+      "/cart": { ssr: false },
+      "/my-account/**": { ssr: false },
+      "/order-summary/**": { ssr: false },
 
       // Статични файлове с дълъг кеш
-      "/images/**": {
+      "/_nuxt/**": {
         headers: {
-          "Cache-Control": "max-age=31536000",
+          "Cache-Control": "public, max-age=31536000, immutable",
         },
       },
     },

@@ -27,6 +27,9 @@ jobs:
 
       # 4. Build апликацията
       - name: Build application
+        env:
+          GQL_HOST: https://admin.bgfreak.store/graphql
+          FRONT_END_URL: https://bgfreak.store
         run: npm run generate
 
       # 5. Deploy към VPS
