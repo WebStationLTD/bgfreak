@@ -122,6 +122,7 @@ export default defineNuxtConfig({
     prerender: {
       // Crawl links автоматично - ще генерира всички намерени линкове
       crawlLinks: true,
+      // Ще добавим продуктовите routes от server plugin
       routes: [
         "/",
         "/magazin",
@@ -131,9 +132,10 @@ export default defineNuxtConfig({
         "/contact",
         "/blog",
       ],
-      concurrency: 10,
-      interval: 1000,
+      concurrency: 5, // Намаляваме за да не претоварим сървъра
+      interval: 500, // 500ms между заявките
       failOnError: false,
+      autoSubfolderIndex: true, // Генерира index.html в подпапки
     },
     minify: true,
     compressPublicAssets: true,
