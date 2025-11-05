@@ -4,6 +4,11 @@ name: Deploy to VPS
 on:
   push:
     branches: [master]
+  # Позволява ръчно пускане от GitHub UI
+  workflow_dispatch:
+  # Позволява пускане от WordPress webhook
+  repository_dispatch:
+    types: [product-update]
 
 jobs:
   deploy:
@@ -40,7 +45,7 @@ jobs:
           username: root
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 20203
-          source: ".output/public/*"
+          source: ".output/public/*,.output/public/.htaccess"
           target: "/home/bgfreak/nodejs-apps/bgfreak/"
           strip_components: 2
           overwrite: true

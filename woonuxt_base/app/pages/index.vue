@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { ProductsOrderByEnum } from '#woo';
 
-// Add Vercel speed insights
-import { SpeedInsights } from '@vercel/speed-insights/vue';
-
 const { siteName, description, shortDescription, siteImage } = useAppConfig();
 const { frontEndUrl } = useHelpers();
 
@@ -110,7 +107,6 @@ if (homeSeo?.schema?.raw) {
       <ProductRow :products="popularProducts" class="grid-cols-2 md:grid-cols-4 lg:grid-cols-5 mt-8" />
     </section>-->
   </main>
-  <SpeedInsights />
 </template>
 
 <style scoped>
