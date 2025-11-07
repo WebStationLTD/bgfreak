@@ -80,7 +80,7 @@ query getProducts(
   }
 }
 
-# НОВА ОПТИМИЗИРАНА ЗАЯВКА за пагинация
+# ⚡ ОПТИМИЗИРАНА ЗАЯВКА за пагинация с attributeFilter support
 query getProductsOptimized(
   $after: String
   $slug: [String]
@@ -92,7 +92,7 @@ query getProductsOptimized(
   $maxPrice: Float
   $onSale: Boolean
   $search: String
-  $attributes: ProductAttributeQueryInput
+  $attributeFilter: [WooNuxtTaxonomyFilterInput]
 ) {
   products(
     first: $first
@@ -105,7 +105,7 @@ query getProductsOptimized(
       maxPrice: $maxPrice
       onSale: $onSale
       search: $search
-      attributes: $attributes
+      attributeFilter: $attributeFilter
       orderby: { field: $orderby, order: $order }
       status: "publish"
     }
@@ -138,7 +138,7 @@ query getProductsOptimized(
   }
 }
 
-# ULTRA БЪРЗА заявка за курсори (без продуктни данни)
+# ⚡ ULTRA БЪРЗА заявка за курсори (без продуктни данни) с attributeFilter
 query getProductCursors(
   $slug: [String]
   $productTag: [String]
@@ -149,7 +149,7 @@ query getProductCursors(
   $maxPrice: Float
   $onSale: Boolean
   $search: String
-  $attributes: ProductAttributeQueryInput
+  $attributeFilter: [WooNuxtTaxonomyFilterInput]
 ) {
   products(
     first: $first
@@ -161,7 +161,7 @@ query getProductCursors(
       maxPrice: $maxPrice
       onSale: $onSale
       search: $search
-      attributes: $attributes
+      attributeFilter: $attributeFilter
       orderby: { field: $orderby, order: $order }
       status: "publish"
     }
