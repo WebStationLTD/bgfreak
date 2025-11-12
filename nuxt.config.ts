@@ -66,7 +66,7 @@ export default defineNuxtConfig({
 
   // За правилен SSG build
   ssr: true,
-  
+
   // SPA fallback за 404 страници
   generate: {
     fallback: true, // Създава 404.html и използва SPA fallback
@@ -122,6 +122,28 @@ export default defineNuxtConfig({
         },
         { rel: "dns-prefetch", href: "https://fonts.googleapis.com" },
         { rel: "dns-prefetch", href: "https://fonts.gstatic.com" },
+        // ⚡ Preconnect за Google Analytics (оптимизация)
+        {
+          rel: "preconnect",
+          href: "https://www.googletagmanager.com",
+        },
+        { rel: "dns-prefetch", href: "https://www.googletagmanager.com" },
+      ],
+      script: [
+        // 📊 Google Analytics (gtag.js)
+        {
+          src: "https://www.googletagmanager.com/gtag/js?id=G-EMXSRFEJW9",
+          async: true,
+        },
+        {
+          children: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-EMXSRFEJW9');
+          `,
+          type: "text/javascript",
+        },
       ],
     },
   },
@@ -204,13 +226,13 @@ export default defineNuxtConfig({
       "/contact": { prerender: true },
       "/blog": { prerender: true },
       "/blog/**": { prerender: true },
-      
+
       // Продуктови страници - SSG
       "/produkt/**": { prerender: true },
       "/product-cat/**": { prerender: true },
       "/product-tag/**": { prerender: true },
       "/marka-produkt/**": { prerender: true },
-      
+
       // Динамични страници - SPA fallback
       "/checkout/**": { ssr: false },
       "/cart": { ssr: false },
@@ -242,7 +264,8 @@ export default defineNuxtConfig({
     },
     esbuild: {
       // ⚡ Премахване на console.log в production за по-добър performance
-      drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+      drop:
+        process.env.NODE_ENV === "production" ? ["console", "debugger"] : [],
     },
   },
 
