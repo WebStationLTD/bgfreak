@@ -69,10 +69,12 @@ const urlSegments = decodedPart.split('/').filter(Boolean);
 // Получаваме текущия slug (последният сегмент)
 const currentSlug = ref(urlSegments[urlSegments.length - 1] || '');
 const currentPageNumber = ref(1);
-const slug = currentSlug.value;
 
-// ⚡ SMART CACHING (като в magazin.vue)
-const CATEGORY_CACHE_KEY = `woonuxt_category_${slug}`;
+// ⚡ ПОПРАВКА: Правим slug computed за да се обновява при промяна на route
+const slug = computed(() => currentSlug.value);
+
+// ⚡ SMART CACHING (като в magazin.vue) - използваме функция за динамичен ключ
+const getCategoryCacheKey = () => `woonuxt_category_${slug.value}`;
 const CACHE_DURATION = 30 * 60 * 1000; // 30 минути
 const CACHE_VERSION = 'v1';
 
@@ -81,14 +83,15 @@ const getCachedCategoryData = (): { category: Category | null; count: number | n
   if (!process.client) return null;
 
   try {
-    const cached = sessionStorage.getItem(CATEGORY_CACHE_KEY);
+    const cacheKey = getCategoryCacheKey();
+    const cached = sessionStorage.getItem(cacheKey);
     if (!cached) return null;
 
     const { category, count, timestamp, version } = JSON.parse(cached);
     const now = Date.now();
 
     if (version !== CACHE_VERSION || now - timestamp > CACHE_DURATION) {
-      sessionStorage.removeItem(CATEGORY_CACHE_KEY);
+      sessionStorage.removeItem(cacheKey);
       return null;
     }
 
@@ -102,13 +105,14 @@ const setCachedCategoryData = (category: Category, count: number): void => {
   if (!process.client) return;
 
   try {
+    const cacheKey = getCategoryCacheKey();
     const cacheData = {
       category,
       count,
       timestamp: Date.now(),
       version: CACHE_VERSION,
     };
-    sessionStorage.setItem(CATEGORY_CACHE_KEY, JSON.stringify(cacheData));
+    sessionStorage.setItem(cacheKey, JSON.stringify(cacheData));
   } catch {
     // Ignore cache errors
   }
@@ -123,12 +127,12 @@ if (process.server) {
   // ⚡ ОПТИМИЗАЦИЯ: Promise.all зарежда 2те заявки едновременно!
   const [categoryData, productsCountData] = await Promise.all([
     useAsyncGql('getProductCategories', {
-      slug: [slug],
+      slug: [slug.value],
       hideEmpty: false,
       first: 10,
     }),
     useAsyncGql('getProductsCount', {
-      slug: [slug],
+      slug: [slug.value],
       first: 2000,
     }),
   ]);
@@ -354,10 +358,20 @@ const parseFiltersFromQuery = (filterQuery: string) => {
 
 // Основна функция за зареждане на продукти (ОПТИМИЗИРАНА!)
 const loadCategoryProducts = async () => {
+  console.log('🔵 DEBUG loadCategoryProducts: START');
+  
+  // ⚡ ПОПРАВКА: Предотвратяваме race conditions
+  if (isNavigating) {
+    console.log('⚠️ DEBUG loadCategoryProducts: isNavigating=true, ABORT');
+    return;
+  }
+
   try {
     const { slug, pageNumber } = extractRouteParams();
+    console.log('🔵 DEBUG loadCategoryProducts: slug=', slug, 'pageNumber=', pageNumber);
 
     if (!slug) {
+      console.log('⚠️ DEBUG loadCategoryProducts: Няма slug, ABORT');
       resetProductsState();
       currentSlug.value = '';
       hasEverLoaded.value = true;
@@ -366,6 +380,7 @@ const loadCategoryProducts = async () => {
 
     const targetPageNumber = pageNumber;
 
+    console.log('🔵 DEBUG loadCategoryProducts: Започвам зареждане...');
     isLoading.value = true;
     resetProductsState();
     currentSlug.value = slug;
@@ -386,7 +401,10 @@ const loadCategoryProducts = async () => {
     const hasOrderBy = route.query.orderby;
     const categoryIdentifier = [slug];
 
+    console.log('🔵 DEBUG loadCategoryProducts: hasFilters=', hasFilters, 'hasOrderBy=', hasOrderBy);
+
     if (hasFilters || hasOrderBy) {
+      console.log('🔵 DEBUG loadCategoryProducts: Зареждам С ФИЛТРИ');
       const filters = hasFilters ? parseFiltersFromQuery(route.query.filter as string) : {};
 
       let graphqlOrderBy = 'DATE';
@@ -414,11 +432,13 @@ const loadCategoryProducts = async () => {
         }
       });
 
+      console.log('🔵 DEBUG loadCategoryProducts: Извиквам loadProductsPageOptimized/jumpToPageOptimized');
       if (pageNumber === 1) {
         await loadProductsPageOptimized(pageNumber, categoryIdentifier, graphqlOrderBy, { ...filters, attributeFilter: attributeFilters });
       } else {
         await jumpToPageOptimized(pageNumber, categoryIdentifier, graphqlOrderBy, { ...filters, attributeFilter: attributeFilters });
       }
+      console.log('🔵 DEBUG loadCategoryProducts: loadProductsPageOptimized/jumpToPageOptimized ЗАВЪРШИ');
 
       if (process.client && hasFilters && pageNumber > 1 && (!products.value || products.value.length === 0)) {
         throw showError({ statusCode: 404, statusMessage: `Страница ${pageNumber} не съществува с тези филтри` });
@@ -426,10 +446,15 @@ const loadCategoryProducts = async () => {
 
       await loadCategoryCount(filters);
     } else {
+      console.log('🔵 DEBUG loadCategoryProducts: Зареждам БЕЗ ФИЛТРИ');
       if (pageNumber === 1) {
+        console.log('🔵 DEBUG loadCategoryProducts: Извиквам loadProductsPageOptimized (page 1)');
         await loadProductsPageOptimized(pageNumber, categoryIdentifier);
+        console.log('🔵 DEBUG loadCategoryProducts: loadProductsPageOptimized ЗАВЪРШИ');
       } else {
+        console.log('🔵 DEBUG loadCategoryProducts: Извиквам jumpToPageOptimized (page', pageNumber, ')');
         await jumpToPageOptimized(pageNumber, categoryIdentifier);
+        console.log('🔵 DEBUG loadCategoryProducts: jumpToPageOptimized ЗАВЪРШИ');
       }
 
       if (process.client && pageNumber > 1 && (!products.value || products.value.length === 0)) {
@@ -440,6 +465,9 @@ const loadCategoryProducts = async () => {
       filteredCategoryCount.value = null;
     }
 
+    console.log('🔵 DEBUG loadCategoryProducts: products.value.length=', products.value?.length);
+    console.log('🔵 DEBUG loadCategoryProducts: Маркирам hasEverLoaded=true');
+    
     hasEverLoaded.value = true;
     currentPage.value = targetPageNumber;
 
@@ -447,7 +475,10 @@ const loadCategoryProducts = async () => {
     updateCategoryNextPrevLinks();
 
     await nextTick();
+    
+    console.log('✅ DEBUG loadCategoryProducts: ЗАВЪРШИ УСПЕШНО');
   } catch (error) {
+    console.error('❌ DEBUG loadCategoryProducts: ГРЕШКА:', error);
     hasEverLoaded.value = true;
   }
 };
@@ -466,44 +497,58 @@ onMounted(async () => {
 
     if (needsRefresh) {
       try {
-        const [categoryData, productsCountData] = await Promise.all([
-          useAsyncGql('getProductCategories', { slug: [actualSlug], hideEmpty: false, first: 10 }),
-          useAsyncGql('getProductsCount', { slug: [actualSlug], first: 2000 }),
+        console.log('🔄 DEBUG: Зареждам category данни за:', actualSlug);
+        
+        // ⚡ ПОПРАВКА: Използваме GQL функция директно вместо useAsyncGql след mount
+        const GQL = useGql();
+        
+        const [categoryResponse, productsCountResponse] = await Promise.all([
+          GQL('getProductCategories', { slug: [actualSlug], hideEmpty: false, first: 10 }),
+          GQL('getProductsCount', { slug: [actualSlug], first: 2000 }),
         ]);
+        
+        const categoryData = categoryResponse?.data || categoryResponse;
+        const productsCountData = productsCountResponse?.data || productsCountResponse;
 
-        if (categoryData.data.value?.productCategories?.nodes?.[0]) {
-          matchingCategory = categoryData.data.value.productCategories.nodes[0] as Category;
+        console.log('🔄 DEBUG: Category data:', categoryData);
+        console.log('🔄 DEBUG: Products count data:', productsCountData);
+
+        if (categoryData?.productCategories?.nodes?.[0]) {
+          matchingCategory = categoryData.productCategories.nodes[0] as Category;
           matchingCategoryRef.value = matchingCategory;
+          console.log('✅ DEBUG: Зареден category:', matchingCategory.name);
         } else {
+          console.error('❌ DEBUG: Категорията не е намерена в отговора');
           throw showError({ statusCode: 404, statusMessage: 'Категорията не е намерена' });
         }
 
-        if (productsCountData.data.value?.products?.edges) {
-          realProductCount = productsCountData.data.value.products.edges.length;
+        if (productsCountData?.products?.edges) {
+          realProductCount = productsCountData.products.edges.length;
+          console.log('✅ DEBUG: Product count:', realProductCount);
         }
 
         setCachedCategoryData(matchingCategory, realProductCount || 0);
       } catch (error) {
-        console.error('Failed to load category:', error);
+        console.error('❌ DEBUG: Failed to load category:', error);
         throw showError({ statusCode: 404, statusMessage: 'Категорията не е намерена' });
       }
     } else {
       matchingCategoryRef.value = matchingCategory;
+      console.log('✅ DEBUG: Използвам кеширан category:', matchingCategory?.name);
     }
   }
 
-  if (products.value.length === 0 || !hasEverLoaded.value) {
-    // ⚡ НЕ ЧАКАМЕ - зареждаме асинхронно за да не блокираме UI
-    loadCategoryProducts().then(() => {
-      nextTick(() => {
-        updateCategoryNextPrevLinks();
-      });
-    });
-  } else {
+  // ⚡ КРИТИЧНО: ВИНАГИ зареждаме продуктите при mount за да избегнем старо състояние
+  // Това е ключът за правилна работа при refresh (F5)
+  console.log('🚀 DEBUG: Започвам зареждане на продукти в onMounted');
+  loadCategoryProducts().then(() => {
+    console.log('✅ DEBUG: Продуктите са заредени успешно');
     nextTick(() => {
       updateCategoryNextPrevLinks();
     });
-  }
+  }).catch((error) => {
+    console.error('❌ DEBUG: Грешка при зареждане на продукти:', error);
+  });
 });
 
 // SMART UNIFIED ROUTE WATCHER с DEBOUNCE
@@ -653,7 +698,7 @@ const loadCategoryCount = async (filters: any) => {
   if (hasAnyFilters) {
     try {
       const variables: any = {
-        slug: [slug],
+        slug: [slug.value],
         first: 2000,
       };
 

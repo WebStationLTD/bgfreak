@@ -54,15 +54,15 @@ interface Tag {
   } | null;
 }
 
-const currentSlug = ref('');
-const currentPageNumber = ref(1);
-
 const routeSlug = route.params.tagSlug || route.params.slug;
 const decodedSlug = routeSlug ? decodeURIComponent(String(routeSlug)) : '';
-const slug = decodedSlug;
 
-// ⚡ SMART CACHING
-const TAG_CACHE_KEY = `woonuxt_tag_${slug}`;
+// ⚡ ПОПРАВКА: Използваме само currentSlug за консистентност
+const currentSlug = ref(decodedSlug);
+const currentPageNumber = ref(1);
+
+// ⚡ SMART CACHING - използваме функция за динамичен ключ
+const getTagCacheKey = () => `woonuxt_tag_${currentSlug.value}`;
 const CACHE_DURATION = 30 * 60 * 1000; // 30 минути
 const CACHE_VERSION = 'v1';
 
@@ -71,14 +71,15 @@ const getCachedTagData = (): { tag: Tag | null; count: number | null } | null =>
   if (!process.client) return null;
 
   try {
-    const cached = sessionStorage.getItem(TAG_CACHE_KEY);
+    const cacheKey = getTagCacheKey();
+    const cached = sessionStorage.getItem(cacheKey);
     if (!cached) return null;
 
     const { tag, count, timestamp, version } = JSON.parse(cached);
     const now = Date.now();
 
     if (version !== CACHE_VERSION || now - timestamp > CACHE_DURATION) {
-      sessionStorage.removeItem(TAG_CACHE_KEY);
+      sessionStorage.removeItem(cacheKey);
       return null;
     }
 
@@ -92,13 +93,14 @@ const setCachedTagData = (tag: Tag, count: number): void => {
   if (!process.client) return;
 
   try {
+    const cacheKey = getTagCacheKey();
     const cacheData = {
       tag,
       count,
       timestamp: Date.now(),
       version: CACHE_VERSION,
     };
-    sessionStorage.setItem(TAG_CACHE_KEY, JSON.stringify(cacheData));
+    sessionStorage.setItem(cacheKey, JSON.stringify(cacheData));
   } catch {
     // Ignore cache errors
   }
@@ -111,12 +113,12 @@ let realProductCount: number | null = null;
 if (process.server) {
   const [tagData, productsCountData] = await Promise.all([
     useAsyncGql('getProductTags', {
-      slug: [slug],
+      slug: [currentSlug.value],
       hideEmpty: false,
       first: 10,
     }),
     useAsyncGql('getProductsCount', {
-      productTag: [slug],
+      productTag: [currentSlug.value],
       first: 2000,
     }),
   ]);
@@ -172,7 +174,7 @@ const generateTagSeoMeta = () => {
   }
 
   const canonicalUrl =
-    pageNumber === 1 ? `${frontEndUrl || 'https://bgfreak.store'}/product-tag/${slug}` : `${frontEndUrl || 'https://bgfreak.store'}/product-tag/${slug}/page/${pageNumber}`;
+    pageNumber === 1 ? `${frontEndUrl || 'https://bgfreak.store'}/product-tag/${currentSlug.value}` : `${frontEndUrl || 'https://bgfreak.store'}/product-tag/${currentSlug.value}/page/${pageNumber}`;
 
   return {
     title: finalTitle,
@@ -235,8 +237,8 @@ const updateTagNextPrevLinks = () => {
   if (currentSeoMeta.pageNumber > 1) {
     const prevUrl =
       currentSeoMeta.pageNumber === 2
-        ? `${frontEndUrl || 'https://bgfreak.store'}/product-tag/${slug}`
-        : `${frontEndUrl || 'https://bgfreak.store'}/product-tag/${slug}/page/${currentSeoMeta.pageNumber - 1}`;
+        ? `${frontEndUrl || 'https://bgfreak.store'}/product-tag/${currentSlug.value}`
+        : `${frontEndUrl || 'https://bgfreak.store'}/product-tag/${currentSlug.value}/page/${currentSeoMeta.pageNumber - 1}`;
 
     updatedTagLinks.push({ rel: 'prev', href: prevUrl });
   }
@@ -251,7 +253,7 @@ const updateTagNextPrevLinks = () => {
   }
 
   if (hasNextPage) {
-    const nextUrl = `${frontEndUrl || 'https://bgfreak.store'}/product-tag/${slug}/page/${currentSeoMeta.pageNumber + 1}`;
+    const nextUrl = `${frontEndUrl || 'https://bgfreak.store'}/product-tag/${currentSlug.value}/page/${currentSeoMeta.pageNumber + 1}`;
     updatedTagLinks.push({ rel: 'next', href: nextUrl });
   }
 
@@ -338,6 +340,11 @@ const parseFiltersFromQuery = (filterQuery: string) => {
 
 // Основна функция за зареждане на продукти (ОПТИМИЗИРАНА!)
 const loadTagProducts = async () => {
+  // ⚡ ПОПРАВКА: Предотвратяваме race conditions
+  if (isNavigating) {
+    return;
+  }
+
   try {
     const { slug, pageNumber } = extractRouteParams();
 
@@ -450,44 +457,54 @@ onMounted(async () => {
 
     if (needsRefresh) {
       try {
-        const [tagData, productsCountData] = await Promise.all([
-          useAsyncGql('getProductTags', { slug: [actualSlug], hideEmpty: false, first: 10 }),
-          useAsyncGql('getProductsCount', { productTag: [actualSlug], first: 2000 }),
+        console.log('🔄 DEBUG: Зареждам tag данни за:', actualSlug);
+        
+        // ⚡ ПОПРАВКА: Използваме GQL функция директно вместо useAsyncGql след mount
+        const GQL = useGql();
+        
+        const [tagResponse, productsCountResponse] = await Promise.all([
+          GQL('getProductTags', { slug: [actualSlug], hideEmpty: false, first: 10 }),
+          GQL('getProductsCount', { productTag: [actualSlug], first: 2000 }),
         ]);
+        
+        const tagData = tagResponse?.data || tagResponse;
+        const productsCountData = productsCountResponse?.data || productsCountResponse;
 
-        if (tagData.data.value?.productTags?.nodes?.[0]) {
-          matchingTag = tagData.data.value.productTags.nodes[0] as Tag;
+        console.log('🔄 DEBUG: Tag data:', tagData);
+        console.log('🔄 DEBUG: Products count data:', productsCountData);
+
+        if (tagData?.productTags?.nodes?.[0]) {
+          matchingTag = tagData.productTags.nodes[0] as Tag;
           matchingTagRef.value = matchingTag;
+          console.log('✅ DEBUG: Зареден tag:', matchingTag.name);
         } else {
+          console.error('❌ DEBUG: Етикетът не е намерен в отговора');
           throw showError({ statusCode: 404, statusMessage: 'Етикетът не е намерен' });
         }
 
-        if (productsCountData.data.value?.products?.edges) {
-          realProductCount = productsCountData.data.value.products.edges.length;
+        if (productsCountData?.products?.edges) {
+          realProductCount = productsCountData.products.edges.length;
+          console.log('✅ DEBUG: Product count:', realProductCount);
         }
 
         setCachedTagData(matchingTag, realProductCount || 0);
       } catch (error) {
-        console.error('Failed to load tag:', error);
+        console.error('❌ DEBUG: Failed to load tag:', error);
         throw showError({ statusCode: 404, statusMessage: 'Етикетът не е намерен' });
       }
     } else {
       matchingTagRef.value = matchingTag;
+      console.log('✅ DEBUG: Използвам кеширан tag:', matchingTag?.name);
     }
   }
 
-  if (products.value.length === 0 || !hasEverLoaded.value) {
-    // ⚡ НЕ ЧАКАМЕ - зареждаме асинхронно за да не блокираме UI
-    loadTagProducts().then(() => {
-      nextTick(() => {
-        updateTagNextPrevLinks();
-      });
-    });
-  } else {
+  // ⚡ КРИТИЧНО: ВИНАГИ зареждаме продуктите при mount за да избегнем старо състояние
+  // Това е ключът за правилна работа при refresh (F5)
+  loadTagProducts().then(() => {
     nextTick(() => {
       updateTagNextPrevLinks();
     });
-  }
+  });
 });
 
 // SMART UNIFIED ROUTE WATCHER с DEBOUNCE
@@ -524,7 +541,7 @@ watch(
             if (newFilter) queryParams.set('filter', newFilter);
 
             const queryString = queryParams.toString();
-            const newUrl = `/product-tag/${slug}${queryString ? `?${queryString}` : ''}`;
+            const newUrl = `/product-tag/${currentSlug.value}${queryString ? `?${queryString}` : ''}`;
 
             previousQuery.value = {
               orderby: newOrderBy,
@@ -635,7 +652,7 @@ const loadTagCount = async (filters: any) => {
   if (hasAnyFilters) {
     try {
       const variables: any = {
-        productTag: [slug],
+        productTag: [currentSlug.value],
         first: 2000,
       };
 
