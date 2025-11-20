@@ -62,14 +62,17 @@ export const useCategoryFilters = () => {
           variables.after = after;
         }
 
-        const { data } = await useAsyncGql('getCategoryAttributes', variables);
-        const batch = data.value?.products?.nodes || [];
+        // ⚡ ПОПРАВКА: Използваме GQL функция директно вместо useAsyncGql след mount
+        const GQL = useGql();
+        const response = await GQL('getCategoryAttributes', variables);
+        const data = response?.data || response;
+        const batch = data?.products?.nodes || [];
 
         if (batch.length === 0) break;
 
         allProducts.push(...batch);
 
-        const pageInfo = data.value?.products?.pageInfo;
+        const pageInfo = data?.products?.pageInfo;
         hasNextPage = pageInfo?.hasNextPage || false;
         after = pageInfo?.endCursor || null;
         batchCount++;

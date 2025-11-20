@@ -145,19 +145,12 @@ const loadTerms = async () => {
   }
 };
 
-// SSR: Зареждаме само ако има categorySlug (контекстуални филтри)
-if (categorySlug && categorySlug.trim().length > 0) {
-  await loadTerms();
-}
-
-// Client: Lazy loading за глобални филтри
+// ⚡ ПОПРАВКА: Зареждаме винаги на клиента в onMounted (след ClientOnly wrap)
 onMounted(() => {
-  if (!categorySlug || categorySlug.trim().length === 0) {
-    // За /magazin - зареждаме асинхронно след mount
-    nextTick(() => {
-      loadTerms();
-    });
-  }
+  // Използваме nextTick за да се изчака пълното монтиране
+  nextTick(() => {
+    loadTerms();
+  });
 });
 
 // Filter out the product category terms and the global product attributes with their terms
@@ -203,55 +196,59 @@ const attributesWithTerms = computed(() =>
 
 <template>
   <!-- Desktop филтри - остават на мястото си -->
-  <aside id="filters" class="hidden lg:block">
-    <div class="relative z-30 grid mb-12 space-y-8 divide-y">
-      <PriceFilter />
-      <CategoryFilter v-if="!hideCategories" :terms="productCategoryTerms" />
-      <div v-for="attribute in attributesWithTerms" :key="attribute.slug">
-        <ColorFilter v-if="attribute.slug == 'pa_color' || attribute.slug == 'pa_colour'" :attribute />
-        <GlobalFilter v-else :attribute />
-      </div>
-      <OnSaleFilter />
-      <!-- ВРЕМЕННО СКРИТ - StarRatingFilter -->
-      <!-- <LazyStarRatingFilter v-if="storeSettings.showReviews" /> -->
-      <LazyResetFiltersButton v-if="isFiltersActive" />
-    </div>
-  </aside>
-
-  <!-- Mobile филтри - teleport до body -->
-  <Teleport to="body">
-    <aside id="mobile-filters" class="block lg:hidden">
-      <!-- Back/Close button -->
-      <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-white sticky top-0 z-50">
-        <h2 class="text-lg font-semibold">Филтри</h2>
-        <button @click="closeMobileFilters" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Затвори филтрите">
-          <Icon name="ion:close" size="24" />
-        </button>
-      </div>
-
-      <div class="p-4">
-        <div class="mb-4">
-          <div class="cursor-pointer flex font-semibold leading-none justify-between items-center mb-3">
-            <span>Сортиране</span>
-          </div>
-          <OrderByDropdown class="w-full" />
+  <ClientOnly>
+    <aside id="filters" class="hidden lg:block">
+      <div class="relative z-30 grid mb-12 space-y-8 divide-y">
+        <PriceFilter />
+        <CategoryFilter v-if="!hideCategories" :terms="productCategoryTerms" />
+        <div v-for="attribute in attributesWithTerms" :key="attribute.slug">
+          <ColorFilter v-if="attribute.slug == 'pa_color' || attribute.slug == 'pa_colour'" :attribute />
+          <GlobalFilter v-else :attribute />
         </div>
-        <div class="relative z-30 grid mb-12 space-y-8 divide-y">
-          <PriceFilter />
-          <CategoryFilter v-if="!hideCategories" :terms="productCategoryTerms" />
-          <div v-for="attribute in attributesWithTerms" :key="attribute.slug">
-            <ColorFilter v-if="attribute.slug == 'pa_color' || attribute.slug == 'pa_colour'" :attribute />
-            <GlobalFilter v-else :attribute />
-          </div>
-          <OnSaleFilter />
-          <!-- ВРЕМЕННО СКРИТ - StarRatingFilter -->
-          <!-- <LazyStarRatingFilter v-if="storeSettings.showReviews" /> -->
-          <LazyResetFiltersButton v-if="isFiltersActive" />
-        </div>
+        <OnSaleFilter />
+        <!-- ВРЕМЕННО СКРИТ - StarRatingFilter -->
+        <!-- <LazyStarRatingFilter v-if="storeSettings.showReviews" /> -->
+        <LazyResetFiltersButton v-if="isFiltersActive" />
       </div>
     </aside>
-    <div class="fixed inset-0 hidden bg-black bg-opacity-50 filter-overlay" style="z-index: 99998 !important" @click="closeMobileFilters"></div>
-  </Teleport>
+  </ClientOnly>
+
+  <!-- Mobile филтри - teleport до body -->
+  <ClientOnly>
+    <Teleport to="body">
+      <aside id="mobile-filters" class="block lg:hidden">
+        <!-- Back/Close button -->
+        <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-white sticky top-0 z-50">
+          <h2 class="text-lg font-semibold">Филтри</h2>
+          <button @click="closeMobileFilters" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Затвори филтрите">
+            <Icon name="ion:close" size="24" />
+          </button>
+        </div>
+
+        <div class="p-4">
+          <div class="mb-4">
+            <div class="cursor-pointer flex font-semibold leading-none justify-between items-center mb-3">
+              <span>Сортиране</span>
+            </div>
+            <OrderByDropdown class="w-full" />
+          </div>
+          <div class="relative z-30 grid mb-12 space-y-8 divide-y">
+            <PriceFilter />
+            <CategoryFilter v-if="!hideCategories" :terms="productCategoryTerms" />
+            <div v-for="attribute in attributesWithTerms" :key="attribute.slug">
+              <ColorFilter v-if="attribute.slug == 'pa_color' || attribute.slug == 'pa_colour'" :attribute />
+              <GlobalFilter v-else :attribute />
+            </div>
+            <OnSaleFilter />
+            <!-- ВРЕМЕННО СКРИТ - StarRatingFilter -->
+            <!-- <LazyStarRatingFilter v-if="storeSettings.showReviews" /> -->
+            <LazyResetFiltersButton v-if="isFiltersActive" />
+          </div>
+        </div>
+      </aside>
+      <div class="fixed inset-0 hidden bg-black bg-opacity-50 filter-overlay" style="z-index: 99998 !important" @click="closeMobileFilters"></div>
+    </Teleport>
+  </ClientOnly>
 </template>
 
 <style lang="postcss">

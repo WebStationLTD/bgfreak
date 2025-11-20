@@ -117,8 +117,11 @@ export function useProducts() {
         activeFilters = { ...filters };
       }
 
-      const { data } = await useAsyncGql('getProducts', variables);
-      const result = data.value?.products;
+      // ⚡ ПОПРАВКА: Използваме GQL директно вместо useAsyncGql след mount
+      const GQL = useGql();
+      const response = await GQL('getProducts', variables);
+      const data = response?.data || response;
+      const result = data?.products;
 
       if (result && result.pageInfo) {
         // Взимаме продуктите за конкретната страница от всички заредени
@@ -368,10 +371,16 @@ export function useProducts() {
           variables.attributeFilter = taxonomyFilters;
         }
       }
+      
+      console.log('🔵 DEBUG useProducts: Финални variables за заявка:', JSON.stringify(variables, null, 2));
 
-      // Използваме оптимизираната заявка
-      const { data } = await useAsyncGql('getProductsOptimized', variables);
-      const result = data.value?.products;
+      // ⚡ ПОПРАВКА: Използваме GQL директно вместо useAsyncGql след mount
+      console.log('🔵 DEBUG useProducts: Извиквам GQL getProductsOptimized с variables:', variables);
+      const GQL = useGql();
+      const response = await GQL('getProductsOptimized', variables);
+      const data = response?.data || response;
+      const result = data?.products;
+      console.log('🔵 DEBUG useProducts: Получих резултат:', result ? `${result.nodes?.length || 0} продукта` : 'null');
 
       if (result && result.pageInfo) {
         let productsToShow = result.nodes || [];
@@ -580,9 +589,12 @@ export function useProducts() {
       }
 
       // Получаваме cursor-ите (много бърза заявка!)
-      const { data: cursorsData } = await useAsyncGql('getProductCursors', variables);
+      // ⚡ ПОПРАВКА: Използваме GQL директно вместо useAsyncGql след mount
+      const GQL = useGql();
+      const cursorsResponse = await GQL('getProductCursors', variables);
+      const cursorsData = cursorsResponse?.data || cursorsResponse;
 
-      if (cursorsData.value?.products?.edges) {
+      if (cursorsData?.products?.edges) {
         const edges = cursorsData.value.products.edges;
 
         console.log(`🔍 CURSOR DEBUG: Искаме страница ${targetPage}, получихме ${edges.length} cursor-а`);
