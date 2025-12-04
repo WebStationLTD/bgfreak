@@ -13,6 +13,11 @@ on:
   schedule:
     - cron: "0 1 * * *" # 01:00 UTC = 03:00 Bulgarian Winter Time (UTC+2)
 
+# 🚨 ВАЖНО: Cancel предишни deploy-и когато се пусне нов
+concurrency:
+  group: deploy-to-vps
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
