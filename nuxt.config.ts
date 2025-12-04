@@ -195,7 +195,7 @@ export default defineNuxtConfig({
     prerender: {
       // Crawl links автоматично - ще генерира всички намерени линкове
       crawlLinks: true,
-      // Ще добавим продуктовите routes от server plugin
+      // Статични routes - продуктовите routes ще се добавят от hook-а по-долу
       routes: [
         "/",
         "/magazin",
@@ -270,4 +270,91 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: "2025-05-03",
+
+  // 🚀 HOOKS: Добавяме продуктови routes ПРЕДИ build
+  hooks: {
+    async 'nitro:config'(nitroConfig) {
+      console.log('🚀 [NITRO CONFIG] Fetching all product routes...');
+      
+      try {
+        const GQL_HOST = 'https://admin.bgfreak.store/graphql';
+        let hasNextPage = true;
+        let cursor = null;
+        let allProducts: any[] = [];
+        let attempts = 0;
+        const maxAttempts = 50;
+        
+        while (hasNextPage && attempts < maxAttempts) {
+          attempts++;
+          const productsQuery = `
+            query GetProducts($after: String) {
+              products(first: 100, after: $after) {
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+                nodes {
+                  slug
+                }
+              }
+            }
+          `;
+
+          const productsResponse = await fetch(GQL_HOST, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+              'Accept': 'application/json',
+              'Origin': 'https://bgfreak.store',
+              'Referer': 'https://bgfreak.store/',
+            },
+            body: JSON.stringify({
+              query: productsQuery,
+              variables: { after: cursor },
+            }),
+          });
+
+          if (!productsResponse.ok) {
+            console.error(`❌ [NITRO CONFIG] HTTP Error: ${productsResponse.status}`);
+            break;
+          }
+
+          const productsData = await productsResponse.json();
+          
+          if (productsData.errors) {
+            console.error('❌ [NITRO CONFIG] GraphQL Errors:', productsData.errors);
+            break;
+          }
+          
+          if (productsData.data?.products?.nodes) {
+            const newProducts = productsData.data.products.nodes;
+            allProducts.push(...newProducts);
+            hasNextPage = productsData.data.products.pageInfo.hasNextPage;
+            cursor = productsData.data.products.pageInfo.endCursor;
+            
+            if (attempts % 5 === 0 || !hasNextPage) {
+              console.log(`📦 [NITRO CONFIG] Fetched ${allProducts.length} products...`);
+            }
+          } else {
+            break;
+          }
+        }
+
+        const productRoutes = allProducts
+          .filter(p => p.slug)
+          .map(p => `/produkt/${p.slug}`);
+        
+        // Добавяме към nitroConfig.prerender.routes
+        nitroConfig.prerender = nitroConfig.prerender || {};
+        nitroConfig.prerender.routes = nitroConfig.prerender.routes || [];
+        nitroConfig.prerender.routes.push(...productRoutes);
+        
+        console.log(`✅ [NITRO CONFIG] Added ${productRoutes.length} product routes to prerender`);
+        
+      } catch (error) {
+        console.error('❌ [NITRO CONFIG] Error:', error);
+      }
+    }
+  },
 });
