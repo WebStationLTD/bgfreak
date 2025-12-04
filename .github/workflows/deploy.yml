@@ -16,6 +16,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 120 # 2 часа timeout (беше по подразбиране 360 минути)
 
     steps:
       # 1. Изтегли кода от GitHub
@@ -38,6 +39,7 @@ jobs:
         env:
           GQL_HOST: https://admin.bgfreak.store/graphql
           FRONT_END_URL: https://bgfreak.store
+          NODE_OPTIONS: --max-old-space-size=4096
         run: npm run generate
 
       # 5. Deploy към VPS

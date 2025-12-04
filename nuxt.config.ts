@@ -151,8 +151,13 @@ export default defineNuxtConfig({
   // ⚡ Global CSS за font optimization
   css: ["~/assets/css/fonts.css"],
 
+  // 🌐 Site config - ИЗИСКВА СЕ за @nuxt/sitemap модула
+  site: {
+    url: "https://bgfreak.store",
+    name: "BGFreak",
+  },
+
   sitemap: {
-    siteUrl: "https://bgfreak.store",
     excludes: [
       "/checkout/order-received/**",
       "/order-summary/**",
@@ -205,10 +210,13 @@ export default defineNuxtConfig({
         "/contact",
         "/blog",
       ],
-      concurrency: 7, // ⚡ Увеличено от 5 на 7 за 4GB RAM VPS (оптимално)
-      interval: 400, // ⚡ Намалено от 500 на 400ms (по-бързо)
+      concurrency: 5, // ⚡ Намалено от 7 на 5 за по-стабилен build (GitHub Actions има лимити)
+      interval: 500, // ⚡ Увеличено от 400 на 500ms (по-бавно но по-стабилно)
       failOnError: false,
       autoSubfolderIndex: true, // Генерира index.html в подпапки
+      // ⚡ ВАЖНО: Retry логика при fail
+      retry: 3,
+      retryDelay: 1000,
     },
     minify: true,
     compressPublicAssets: {
