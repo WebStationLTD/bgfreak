@@ -9,6 +9,9 @@ on:
   # Позволява пускане от WordPress webhook
   repository_dispatch:
     types: [product-update]
+  # ⏰ SCHEDULED DEPLOY: Всяка нощ в 03:00 българско време (01:00 UTC)
+  schedule:
+    - cron: "0 1 * * *" # 01:00 UTC = 03:00 Bulgarian Winter Time (UTC+2)
 
 jobs:
   deploy:
