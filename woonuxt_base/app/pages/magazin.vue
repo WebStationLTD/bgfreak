@@ -135,7 +135,7 @@ const generateSeoMeta = () => {
   }
 
   const canonicalUrl =
-    pageNumber === 1 ? `${frontEndUrl || 'https://bgfreak.vercel.app'}/magazin` : `${frontEndUrl || 'https://bgfreak.vercel.app'}/magazin/page/${pageNumber}`;
+    pageNumber === 1 ? `${frontEndUrl || 'https://bgfreak.store'}/magazin` : `${frontEndUrl || 'https://bgfreak.store'}/magazin/page/${pageNumber}`;
 
   return {
     title: finalTitle,
@@ -192,8 +192,8 @@ const updateNextPrevLinks = () => {
   if (seoMeta.pageNumber > 1) {
     const prevUrl =
       seoMeta.pageNumber === 2
-        ? `${frontEndUrl || 'https://bgfreak.vercel.app'}/magazin`
-        : `${frontEndUrl || 'https://bgfreak.vercel.app'}/magazin/page/${seoMeta.pageNumber - 1}`;
+        ? `${frontEndUrl || 'https://bgfreak.store'}/magazin`
+        : `${frontEndUrl || 'https://bgfreak.store'}/magazin/page/${seoMeta.pageNumber - 1}`;
 
     updatedLinks.push({ rel: 'prev', href: prevUrl });
   }
@@ -210,7 +210,7 @@ const updateNextPrevLinks = () => {
   }
 
   if (hasNextPage) {
-    const nextUrl = `${frontEndUrl || 'https://bgfreak.vercel.app'}/magazin/page/${seoMeta.pageNumber + 1}`;
+    const nextUrl = `${frontEndUrl || 'https://bgfreak.store'}/magazin/page/${seoMeta.pageNumber + 1}`;
     updatedLinks.push({ rel: 'next', href: nextUrl });
   }
 

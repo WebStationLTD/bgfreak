@@ -15,7 +15,7 @@ export function useHelpers() {
       return configUrl.replace(/\/$/, '');
     }
     // Fallback за development и production
-    return 'https://bgfreak.vercel.app';
+    return 'https://bgfreak.store';
   })();
   const isDev: boolean = process.env.NODE_ENV === 'development';
   const FALLBACK_IMG = '/images/placeholder.jpg';
