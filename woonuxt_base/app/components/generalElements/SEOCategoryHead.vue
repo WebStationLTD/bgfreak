@@ -30,7 +30,7 @@ const { category } = defineProps({
 // Generate SEO data
 const title = category.seo?.title || category.name || 'Категория';
 const metaDescription = category.seo?.metaDesc || category.description || `Продукти в категория ${category.name}`;
-const canonical = `${frontEndUrl || 'https://bgfreak.store'}${path}`;
+const canonical = `${frontEndUrl || 'https://bgfreak.vercel.app'}${path}`;
 const siteName = process.env.SITE_TITLE ?? 'WooNuxt';
 
 // OpenGraph and Twitter data
@@ -47,7 +47,7 @@ const twitterImageSrc = category.seo?.twitterImage?.sourceUrl || defaultImageSrc
 const getFullImageURL = (url?: string) => {
   if (!url) return '';
   if (url.startsWith('http')) return url;
-  return `${frontEndUrl || 'https://bgfreak.store'}${url}`;
+  return `${frontEndUrl || 'https://bgfreak.vercel.app'}${url}`;
 };
 
 const defaultImage = getFullImageURL(defaultImageSrc);

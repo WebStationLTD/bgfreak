@@ -91,7 +91,7 @@ useHead({
     { property: 'og:title', content: categoriesSeo?.opengraphTitle || categoriesTitle },
     { property: 'og:description', content: categoriesSeo?.opengraphDescription || categoriesDescription },
   ],
-  link: [{ rel: 'canonical', href: categoriesSeo?.canonical || `${frontEndUrl || 'https://bgfreak.store'}/categories` }],
+  link: [{ rel: 'canonical', href: categoriesSeo?.canonical || `${frontEndUrl || 'https://bgfreak.vercel.app'}/categories` }],
 });
 
 // Добавяне на структурирани данни (schema.org) ако са налични в Yoast

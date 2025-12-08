@@ -22,7 +22,7 @@ const seoDescription =
   homeSeo?.metaDesc ||
   description ||
   'Открийте висококачествено спортно оборудване, фитнес уреди и аксесоари в нашия онлайн магазин. Бързи доставки, конкурентни цени и професионално обслужване.';
-const canonicalUrl = frontEndUrl || 'https://bgfreak.store';
+const canonicalUrl = frontEndUrl || 'https://bgfreak.vercel.app';
 
 useSeoMeta({
   title: seoTitle,

@@ -17,7 +17,7 @@ useHead({
     { property: 'og:title', content: tagsTitle },
     { property: 'og:description', content: tagsDescription },
   ],
-  link: [{ rel: 'canonical', href: `${frontEndUrl || 'https://bgfreak.store'}/etiketi` }],
+  link: [{ rel: 'canonical', href: `${frontEndUrl || 'https://bgfreak.vercel.app'}/etiketi` }],
 });
 </script>
 
