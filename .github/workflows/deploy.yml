@@ -44,7 +44,7 @@ jobs:
         env:
           GQL_HOST: https://admin.bgfreak.store/graphql
           FRONT_END_URL: https://bgfreak.store
-          NODE_OPTIONS: --max-old-space-size=4096
+          NODE_OPTIONS: --max-old-space-size=6144
         run: npm run generate
 
       # 5. Deploy към VPS

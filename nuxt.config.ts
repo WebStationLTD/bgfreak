@@ -210,13 +210,13 @@ export default defineNuxtConfig({
         "/contact",
         "/blog",
       ],
-      concurrency: 5, // ⚡ Намалено от 7 на 5 за по-стабилен build (GitHub Actions има лимити)
-      interval: 500, // ⚡ Увеличено от 400 на 500ms (по-бавно но по-стабилно)
-      failOnError: false,
+      concurrency: 2, // ⚡ КОНСЕРВАТИВНО: 2 паралелни страници (стабилност > скорост)
+      interval: 1000, // ⚡ 1 секунда между заявки за да не претоварваме WordPress API
+      failOnError: false, // Продължава дори при грешка
       autoSubfolderIndex: true, // Генерира index.html в подпапки
       // ⚡ ВАЖНО: Retry логика при fail
       retry: 3,
-      retryDelay: 1000,
+      retryDelay: 2000, // ⚡ 2 секунди между retry-та
     },
     minify: true,
     compressPublicAssets: {
@@ -290,10 +290,19 @@ export default defineNuxtConfig({
         let cursor = null;
         let allProducts: any[] = [];
         let attempts = 0;
-        const maxAttempts = 50;
+        const maxAttempts = 60; // ⚡ Увеличено от 50 на 60 за да покрие всички продукти
+
+        // ⚡ Helper за delay между заявки
+        const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
         while (hasNextPage && attempts < maxAttempts) {
           attempts++;
+          
+          // ⚡ ВАЖНО: 500ms delay между заявки за да не претоварваме API
+          if (attempts > 1) {
+            await delay(500);
+          }
+
           const productsQuery = `
             query GetProducts($after: String) {
               products(first: 100, after: $after) {
@@ -326,8 +335,14 @@ export default defineNuxtConfig({
 
           if (!productsResponse.ok) {
             console.error(
-              `❌ [NITRO CONFIG] HTTP Error: ${productsResponse.status}`
+              `❌ [NITRO CONFIG] HTTP Error: ${productsResponse.status} - Attempt ${attempts}`
             );
+            // ⚡ Retry след 2 секунди при грешка
+            if (attempts < maxAttempts) {
+              console.log("⏳ [NITRO CONFIG] Retrying in 2 seconds...");
+              await delay(2000);
+              continue;
+            }
             break;
           }
 
@@ -349,7 +364,7 @@ export default defineNuxtConfig({
 
             if (attempts % 5 === 0 || !hasNextPage) {
               console.log(
-                `📦 [NITRO CONFIG] Fetched ${allProducts.length} products...`
+                `📦 [NITRO CONFIG] Fetched ${allProducts.length} products... (Attempt ${attempts}/${maxAttempts})`
               );
             }
           } else {
@@ -367,10 +382,13 @@ export default defineNuxtConfig({
         nitroConfig.prerender.routes.push(...productRoutes);
 
         console.log(
-          `✅ [NITRO CONFIG] Added ${productRoutes.length} product routes to prerender`
+          `✅ [NITRO CONFIG] Successfully added ${productRoutes.length} product routes to prerender`
         );
+        console.log(`📊 [NITRO CONFIG] Total API calls made: ${attempts}`);
       } catch (error) {
-        console.error("❌ [NITRO CONFIG] Error:", error);
+        console.error("❌ [NITRO CONFIG] Fatal error:", error);
+        // ⚠️ Не хвърляме error - build-а да продължи с частични данни
+        console.warn("⚠️  [NITRO CONFIG] Continuing build with partial data...");
       }
     },
   },
