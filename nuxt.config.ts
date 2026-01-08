@@ -179,9 +179,9 @@ export default defineNuxtConfig({
       "/magazin",
       "/categories",
       "/etiketi",
-      "/marki",
-      "/contact",
+      "/marki-produkti", // ✅ Правилният URL
       "/wishlist",
+      // ❌ /marki и /contact не съществуват
     ],
   },
 
@@ -219,9 +219,9 @@ export default defineNuxtConfig({
         "/magazin",
         "/categories",
         "/etiketi",
-        "/marki",
-        "/contact",
+        "/marki-produkti", // ✅ Правилният URL (не /marki)
         "/blog",
+        // ❌ /contact не съществува като страница
       ],
 
       // ❌ ПРЕМАХНАТО: Няма нужда от много retry/concurrency за малко страници
@@ -240,9 +240,9 @@ export default defineNuxtConfig({
       "/magazin": { prerender: true },
       "/categories": { prerender: true },
       "/etiketi": { prerender: true },
-      "/marki": { prerender: true },
-      "/contact": { prerender: true },
+      "/marki-produkti": { prerender: true }, // ✅ Правилният URL
       "/blog": { prerender: true },
+      // ❌ Премахнати /marki и /contact - не съществуват като страници
 
       // 🟢 ПРОДУКТИ - SSR + HTTP Cache (100% guaranteed да работи на cPanel)
       "/produkt/**": {
