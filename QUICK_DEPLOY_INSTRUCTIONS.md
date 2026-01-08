@@ -23,6 +23,8 @@ npm run build
 - `package.json`
 - `package-lock.json`
 
+**ВАЖНО:** Само тези 3 неща! Нищо друго не ви трябва!
+
 ### 3. Upload в cPanel (5 минути)
 
 ```
