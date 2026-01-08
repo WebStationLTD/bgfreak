@@ -210,21 +210,9 @@ export default defineNuxtConfig({
     preset: "node-server",
 
     prerender: {
-      // ❌ НЕ crawl-ваме автоматично - ISR генерира on-demand
+      // ❌ ИЗКЛЮЧЕНО: Не генерираме статични HTML файлове - използваме само SSR
       crawlLinks: false,
-
-      // ✅ САМО основни статични страници при build
-      routes: [
-        "/",
-        "/magazin",
-        "/categories",
-        "/etiketi",
-        "/marki-produkti", // ✅ Правилният URL (не /marki)
-        "/blog",
-        // ❌ /contact не съществува като страница
-      ],
-
-      // ❌ ПРЕМАХНАТО: Няма нужда от много retry/concurrency за малко страници
+      routes: [],
       failOnError: false,
     },
 
@@ -235,14 +223,7 @@ export default defineNuxtConfig({
     },
 
     routeRules: {
-      // ✅ Статични страници - cache forever при build
-      "/": { prerender: true },
-      "/magazin": { prerender: true },
-      "/categories": { prerender: true },
-      "/etiketi": { prerender: true },
-      "/marki-produkti": { prerender: true }, // ✅ Правилният URL
-      "/blog": { prerender: true },
-      // ❌ Премахнати /marki и /contact - не съществуват като страници
+      // ✅ Основни страници - SSR (без prerender, за да избегнем ENOENT грешки)
 
       // 🟢 ПРОДУКТИ - SSR + HTTP Cache (100% guaranteed да работи на cPanel)
       "/produkt/**": {
