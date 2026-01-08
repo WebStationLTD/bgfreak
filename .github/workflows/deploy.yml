@@ -1,4 +1,4 @@
-name: Deploy to VPS
+name: Deploy Node.js App to cPanel (Passenger)
 
 # Кога да се изпълнява
 on:
@@ -9,19 +9,20 @@ on:
   # Позволява пускане от WordPress webhook
   repository_dispatch:
     types: [product-update]
-  # ⏰ SCHEDULED DEPLOY: Всяка нощ в 03:00 българско време (01:00 UTC)
+  # ⏰ SCHEDULED DEPLOY: Всяка нощ в 03:00 българско време (опционално)
+  # С ISR не е толкова нужно, но може да помага за cache refresh
   schedule:
     - cron: "0 1 * * *" # 01:00 UTC = 03:00 Bulgarian Winter Time (UTC+2)
 
 # 🚨 ВАЖНО: Cancel предишни deploy-и когато се пусне нов
 concurrency:
-  group: deploy-to-vps
+  group: deploy-to-cpanel
   cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 120 # 2 часа timeout
+    timeout-minutes: 15 # 15 минути (вместо 120!)
 
     steps:
       # 1. Изтегли кода от GitHub
@@ -37,26 +38,65 @@ jobs:
 
       # 3. Инсталирай dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      # 4. Build апликацията
-      - name: Build application
+      # 4. Build за Node.js (не generate!)
+      - name: Build Node.js application
         env:
           GQL_HOST: https://admin.bgfreak.store/graphql
           FRONT_END_URL: https://bgfreak.store
-          NODE_OPTIONS: --max-old-space-size=6144
-        run: npm run generate
+          NODE_ENV: production
+        run: npm run build
 
-      # 5. Deploy към VPS
-      - name: Deploy to VPS
+      # 5. Deploy .output към cPanel
+      - name: Deploy .output to cPanel
         uses: appleboy/scp-action@v0.1.7
         with:
           host: "101.99.94.10"
           username: "root"
           key: ${{ secrets.VPS_SSH_KEY }}
           port: "20203"
-          source: ".output/public/*,.output/public/.htaccess"
-          target: "/home/bgfreak/nodejs-apps/bgfreak/"
-          strip_components: 2
+          source: ".output/*"
+          target: "/home/bgfreak/bgfreak-app/"
           overwrite: true
-          debug: true
+          strip_components: 0
+
+      # 6. Deploy package files за production dependencies
+      - name: Deploy package files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: "101.99.94.10"
+          username: "root"
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: "20203"
+          source: "package.json,package-lock.json"
+          target: "/home/bgfreak/bgfreak-app/"
+          overwrite: true
+
+      # 7. Install dependencies и рестартирай Passenger
+      - name: Install dependencies and restart Passenger
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: "101.99.94.10"
+          username: "root"
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: "20203"
+          script: |
+            cd /home/bgfreak/bgfreak-app
+            
+            # Install production dependencies
+            npm install --production --no-optional
+            
+            # Passenger zero-downtime restart
+            mkdir -p /home/bgfreak/tmp
+            touch /home/bgfreak/tmp/restart.txt
+            
+            echo "✅ Deployment completed successfully!"
+            echo "🔄 Passenger restarting application..."
+            
+            # Wait за Passenger да рестартира
+            sleep 5
+            
+            # Health check
+            echo "🏥 Health check..."
+            curl -I https://bgfreak.store/ || echo "⚠️ Site may take a moment to start"

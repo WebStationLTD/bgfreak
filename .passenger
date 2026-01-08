@@ -1,0 +1,18 @@
+# Passenger конфигурация за BGFreak
+# Документация: https://www.phusionpassenger.com/docs/
+
+# Entry point файл
+startup_file: .output/server/index.mjs
+
+# Препоръчително: Passenger app type
+app_type: node
+
+# Node.js версия (ще се използва версията от cPanel)
+# node_version: 18.x
+
+# Environment
+environment: production
+
+# Log level
+log_level: info
+

@@ -1,12 +1,3 @@
-/**
- * 🔒 СИГУРНА КОНФИГУРАЦИЯ за cPanel + Passenger
- *
- * ВАЖНО: Използваме SSR + HTTP Cache вместо ISR защото:
- * - ✅ 100% guaranteed да работи на cPanel
- * - ✅ ISR на cPanel е рисково (кешът може да се изтрие при Passenger restart)
- * - ✅ SSR + HTTP Cache дава същото поведение с 0% риск
- * - ✅ Browser cache + stale-while-revalidate = "ISR-like" experience
- */
 export default defineNuxtConfig({
   extends: ["./woonuxt_base"],
 
@@ -244,58 +235,40 @@ export default defineNuxtConfig({
       "/contact": { prerender: true },
       "/blog": { prerender: true },
 
-      // 🟢 ПРОДУКТИ - SSR + HTTP Cache (100% guaranteed да работи на cPanel)
+      // 🔥 ПРОДУКТИ - ISR с 5 минути кеш (автоматично генериране)
       "/produkt/**": {
-        ssr: true,
-        headers: {
-          "Cache-Control":
-            "public, max-age=300, s-maxage=300, stale-while-revalidate=600",
-        },
+        swr: 300, // 5 минути stale-while-revalidate
+        isr: true, // Incremental Static Regeneration
       },
 
-      // 🟢 КАТЕГОРИИ - SSR + HTTP Cache (10 минути)
+      // 🔥 КАТЕГОРИИ - ISR с 10 минути кеш
       "/product-cat/**": {
-        ssr: true,
-        headers: {
-          "Cache-Control":
-            "public, max-age=600, s-maxage=600, stale-while-revalidate=1200",
-        },
+        swr: 600, // 10 минути
+        isr: true,
       },
 
-      // 🟢 ТАГОВЕ - SSR + HTTP Cache (10 минути)
+      // 🔥 ТАГОВЕ - ISR с 10 минути кеш
       "/product-tag/**": {
-        ssr: true,
-        headers: {
-          "Cache-Control":
-            "public, max-age=600, s-maxage=600, stale-while-revalidate=1200",
-        },
+        swr: 600,
+        isr: true,
       },
 
-      // 🟢 МАРКИ - SSR + HTTP Cache (10 минути)
+      // 🔥 МАРКИ - ISR с 10 минути кеш
       "/marka-produkt/**": {
-        ssr: true,
-        headers: {
-          "Cache-Control":
-            "public, max-age=600, s-maxage=600, stale-while-revalidate=1200",
-        },
+        swr: 600,
+        isr: true,
       },
 
-      // 🟢 БЛОГ ПОСТОВЕ - SSR + HTTP Cache (10 минути)
+      // 🔥 БЛОГ ПОСТОВЕ - ISR с 10 минути кеш
       "/blog/**": {
-        ssr: true,
-        headers: {
-          "Cache-Control":
-            "public, max-age=600, s-maxage=600, stale-while-revalidate=1200",
-        },
+        swr: 600,
+        isr: true,
       },
 
-      // 🟢 МАГАЗИН страници - SSR + HTTP Cache (5 минути)
+      // 🔥 МАГАЗИН страници - ISR с 5 минути кеш
       "/magazin/**": {
-        ssr: true,
-        headers: {
-          "Cache-Control":
-            "public, max-age=300, s-maxage=300, stale-while-revalidate=600",
-        },
+        swr: 300,
+        isr: true,
       },
 
       // Динамични страници - CSR (само клиентска страна)
