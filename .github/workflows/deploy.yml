@@ -48,6 +48,25 @@ jobs:
           NODE_ENV: production
         run: npm run build
 
+      # 4.5. Създаване на package.json в .output за Passenger
+      - name: Create package.json for Passenger
+        run: |
+          cat > .output/package.json << 'EOF'
+          {
+            "name": "bgfreak-app",
+            "version": "1.0.0",
+            "type": "module",
+            "scripts": {
+              "start": "node server/index.mjs"
+            },
+            "engines": {
+              "node": ">=18.0.0"
+            }
+          }
+          EOF
+          echo "✅ Created package.json in .output/"
+          cat .output/package.json
+
       # 5. Deploy .output към cPanel
       - name: Deploy .output to cPanel
         uses: appleboy/scp-action@v0.1.7
